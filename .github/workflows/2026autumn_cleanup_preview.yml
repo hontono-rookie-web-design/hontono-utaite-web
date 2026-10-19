@@ -1,0 +1,102 @@
+name: 2026autumn Cleanup Preview
+
+on:
+  # PRがMerge / Closeされたとき
+  pull_request:
+    types:
+      - closed
+
+  # GitHub Actionsから手動実行
+  #
+  # 過去のClose済みPRに対応するPreview Deploymentを
+  # 一括でinactiveにしたい場合にも使用する
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  deployments: write
+  pull-requests: read
+
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Cleanup Preview deployments
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          echo "Searching 2026autumn Preview deployments..."
+
+          # --paginateを使用し、
+          # Preview Deploymentが100件を超えた場合も全件取得する
+          gh api \
+            --paginate \
+            "/repos/${{ github.repository }}/deployments?environment=2026autumn-preview&per_page=100" \
+            --jq '.[]' > deployments.jsonl
+
+          deployment_count=$(wc -l < deployments.jsonl | tr -d ' ')
+
+          echo "Found $deployment_count Preview deployment(s)."
+
+          if [ "$deployment_count" -eq 0 ]; then
+            echo "No Preview deployments found."
+            exit 0
+          fi
+
+          while read -r deployment; do
+            deployment_id=$(echo "$deployment" | jq -r '.id')
+            ref=$(echo "$deployment" | jq -r '.ref')
+            description=$(echo "$deployment" | jq -r '.description')
+
+            echo ""
+            echo "========================================"
+            echo "Deployment ID : $deployment_id"
+            echo "Ref           : $ref"
+            echo "Description   : $description"
+
+            # refs/pull/123/merge からPR番号を取得
+            pr_number=$(echo "$ref" | sed -n 's#^refs/pull/\([0-9]\+\)/merge$#\1#p')
+
+            if [ -z "$pr_number" ]; then
+              echo "Could not determine Pull Request number from ref."
+              echo "Skipping deployment $deployment_id."
+              continue
+            fi
+
+            echo "Pull Request : #$pr_number"
+
+            # PRの現在の状態を確認
+            pr_state=$(gh api \
+              "/repos/${{ github.repository }}/pulls/${pr_number}" \
+              --jq '.state')
+
+            merged=$(gh api \
+              "/repos/${{ github.repository }}/pulls/${pr_number}" \
+              --jq '.merged')
+
+            echo "PR state     : $pr_state"
+            echo "PR merged    : $merged"
+
+            # PRがClose済み、またはMerge済みならinactiveにする
+            #
+            # GitHubではMergeされたPRもstateはclosedになるが、
+            # 状態を分かりやすくするためmergedも確認する
+            if [ "$pr_state" = "closed" ] || [ "$merged" = "true" ]; then
+              echo "PR #$pr_number is closed/merged."
+              echo "Marking deployment $deployment_id as inactive."
+
+              gh api \
+                --method POST \
+                "/repos/${{ github.repository }}/deployments/${deployment_id}/statuses" \
+                -f state="inactive" \
+                -f description="Pull Request #${pr_number} was closed or merged." \
+                -F auto_inactive=false
+
+              echo "Deployment $deployment_id marked as inactive."
+
+            else
+              echo "PR #$pr_number is still open."
+              echo "Keeping deployment $deployment_id active."
+            fi
+          done < deployments.jsonl

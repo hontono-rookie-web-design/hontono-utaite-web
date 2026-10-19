@@ -1,0 +1,8 @@
+**/node_modules/
+**/.next/
+**/.open-next/
+**/dist/
+**/build/
+**/coverage/
+**/package-lock.json
+**/.github/

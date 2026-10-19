@@ -1,0 +1,188 @@
+name: 2026autumn Deploy - Production
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "2026autumn/frontend/**"
+
+  # GitHub Actionsから手動でProductionへデプロイ
+  workflow_dispatch:
+
+  # スプレッドシートを更新するワークフローが終わったら、すぐに反映する
+  workflow_run:
+    workflows:
+      - "2026autumn Fetch Videos"
+      - "2026autumn Group Daily Aggregation"
+      - "2026autumn Fetch Derivative"
+      - "2026autumn Fetch Note"
+    types:
+      - completed
+
+permissions:
+  contents: read
+  deployments: write
+
+# Productionへのデプロイが同時に複数実行されないようにする
+concurrency:
+  group: 2026autumn-production
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    # workflow_runの場合は、元のワークフローが成功したときだけ実行する
+    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    # GitHub上では開催期ごとにEnvironmentを分けて管理する
+    environment:
+      name: 2026autumn-production
+      url: https://2026autumn.hontono-rookie-web.workers.dev/
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+        with:
+          # リポジトリをチェックアウトしたあとに
+          # トークンなどの認証情報をGitのconfigに残さない
+          persist-credentials: false
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: "24"
+          cache: "npm"
+          cache-dependency-path: "2026autumn/frontend/package-lock.json"
+
+      - name: Install dependencies
+        run: npm ci
+        working-directory: "2026autumn/frontend"
+
+      - name: Create .env.production
+        working-directory: "2026autumn/frontend"
+        run: |
+          echo "EVENT_PHASE=${{ vars.EVENT_PHASE }}" >> .env.production
+          echo "EVENT_PHASE_SP=${{ vars.EVENT_PHASE_SP }}" >> .env.production
+          echo "NEXT_PUBLIC_SITE_URL=${{ vars.NEXT_PUBLIC_SITE_URL }}" >> .env.production
+          echo "NEXT_PUBLIC_GOOGLE_ANALYTICS_ID=${{ vars.NEXT_PUBLIC_GOOGLE_ANALYTICS_ID }}" >> .env.production
+          echo "SPREADSHEET_ID_DERIVATIVE=${{ secrets.SPREADSHEET_ID_DERIVATIVE }}" >> .env.production
+          echo "SPREADSHEET_ID_NOTES=${{ secrets.SPREADSHEET_ID_NOTES }}" >> .env.production
+          echo "SPREADSHEET_ID_VIDEOS=${{ secrets.SPREADSHEET_ID_VIDEOS }}" >> .env.production
+          echo "SPREADSHEET_ID_VOTEFORM=${{ secrets.SPREADSHEET_ID_VOTEFORM }}" >> .env.production
+
+      # CloudflareのProductionへデプロイ
+      - name: Deploy to Cloudflare Production
+        run: npm run deploy
+        working-directory: "2026autumn/frontend"
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+
+  # Productionへのデプロイ成功後、
+  # 最新以外のGitHub Deploymentをinactiveにする
+  cleanup-deployments:
+    name: Cleanup previous Production deployments
+    needs: deploy
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Mark previous Production deployments inactive
+        # GitHub上のDeployment整理に失敗しても、
+        # CloudflareへのProductionデプロイ自体は失敗扱いにしない
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ github.token }}
+
+        run: |
+          deployments=$(gh api graphql \
+            -F owner="${{ github.repository_owner }}" \
+            -F name="${{ github.event.repository.name }}" \
+            -f query='
+              query($owner: String!, $name: String!) {
+                repository(owner: $owner, name: $name) {
+                  deployments(
+                    first: 100
+                    environments: ["2026autumn-production"]
+                    orderBy: {
+                      field: CREATED_AT
+                      direction: DESC
+                    }
+                  ) {
+                    nodes {
+                      databaseId
+                      state
+                      createdAt
+                    }
+                  }
+                }
+              }
+            ')
+
+          latest_deployment_id=$(echo "$deployments" | \
+            jq -r '.data.repository.deployments.nodes[0].databaseId // empty')
+
+          if [ -z "$latest_deployment_id" ]; then
+            echo "No Production deployments found."
+            exit 0
+          fi
+
+          echo "Latest Production deployment: $latest_deployment_id"
+
+          # 最新Deployment以外から、
+          # inactiveにする必要があるDeploymentをすべて取得する
+          #
+          # INACTIVE / DESTROYED はすでに無効化されているため除外する
+          # PENDING / QUEUED / IN_PROGRESS / WAITING は
+          # 実行中の可能性があるため対象にしない
+          previous_deployments=$(echo "$deployments" | \
+            jq -r '
+              .data.repository.deployments.nodes[1:][]
+              | select(
+                  .state == "ACTIVE"
+                  or .state == "SUCCESS"
+                  or .state == "FAILURE"
+                  or .state == "ERROR"
+                  or .state == "ABANDONED"
+                )
+              | .databaseId
+            ')
+
+          if [ -z "$previous_deployments" ]; then
+            echo "No previous Production deployments to deactivate."
+            exit 0
+          fi
+
+          for deployment_id in $previous_deployments; do
+            echo "Marking Production deployment $deployment_id as inactive"
+
+            success=false
+
+            for attempt in 1 2 3; do
+              if gh api \
+                --method POST \
+                "/repos/${{ github.repository }}/deployments/${deployment_id}/statuses" \
+                -f state="inactive" \
+                -f description="Superseded by a newer Production deployment." \
+                -F auto_inactive=false; then
+
+                success=true
+                break
+              fi
+
+              echo "Attempt $attempt failed for deployment $deployment_id."
+
+              if [ "$attempt" -lt 3 ]; then
+                sleep $((attempt * 10))
+              fi
+            done
+
+            if [ "$success" != "true" ]; then
+              echo "::warning::Failed to mark deployment $deployment_id as inactive after 3 attempts."
+            fi
+
+            # GitHub APIへ短時間に連続して書き込まないよう間隔を空ける
+            sleep 2
+          done
