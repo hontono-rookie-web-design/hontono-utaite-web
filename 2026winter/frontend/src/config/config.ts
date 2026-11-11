@@ -1,6 +1,6 @@
 export const CONFIG = {
   event: {
-    name: "本当のルーキー祭り2026秋",
+    name: "本当のルーキー歌い手祭り2026冬",
   },
 
   ranking: {
@@ -45,7 +45,7 @@ export const CONFIG = {
   },
 
   images: {
-    defaultIllustration: "/images/2026autumn_logo.png",
+    defaultIllustration: "/images/2026winter_logo.png",
   },
 
   googleAnalyticsId: process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS_ID || "",

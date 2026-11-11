@@ -12,9 +12,9 @@ const notoSansJP = Noto_Sans_JP({
 });
 
 export const metadata: Metadata = {
-  title: "本当のルーキー祭り2026秋",
+  title: "本当のルーキー歌い手祭り2026冬",
   description:
-    "ボカロPなどの新人クリエイターを対象とした楽曲投稿・投票イベント「本当のルーキー祭り2026秋」の特設サイト",
+    "新人歌い手を対象とした楽曲投稿・投票イベント「本当のルーキー歌い手祭り2026冬」の特設サイト",
   metadataBase: CONFIG.siteUrl ? new URL(CONFIG.siteUrl) : undefined,
   icons: {
     icon: [
@@ -30,18 +30,18 @@ export const metadata: Metadata = {
     apple: [{ url: "/icons/icon-192x192.png", sizes: "192x192", type: "image/png" }],
   },
   openGraph: {
-    title: "本当のルーキー祭り2026秋",
+    title: "本当のルーキー歌い手祭り2026冬",
     description:
-      "ボカロPなどの新人クリエイターを対象とした楽曲投稿・投票イベント「本当のルーキー祭り2026春」の特設サイト",
-    images: [{ url: "/images/2026autumn_ogp.png" }],
+      "新人歌い手を対象とした楽曲投稿・投票イベント「本当のルーキー歌い手祭り2026冬」の特設サイト",
+    images: [{ url: "/images/2026winter_ogp.png" }],
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "本当のルーキー祭り2026秋",
+    title: "本当のルーキー歌い手祭り2026冬",
     description:
-      "ボカロPなどの新人クリエイターを対象とした楽曲投稿・投票イベント「本当のルーキー祭り2026春」の特設サイト",
-    images: ["/images/2026autumn_ogp.png"],
+      "新人歌い手を対象とした楽曲投稿・投票イベント「本当のルーキー歌い手祭り2026冬」の特設サイト",
+    images: ["/images/2026winter_ogp.png"],
   },
 };
 

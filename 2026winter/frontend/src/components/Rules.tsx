@@ -51,10 +51,10 @@ export default function Rules() {
               原則として基準を超えている場合は参加できませんが、特別な事情がある場合は個別にご相談ください。
             </li>
             <li>
-              本当のルーキー祭り2026秋に参加した場合は
+              本当のルーキー歌い手祭り2026冬に参加した場合は
               <strong>「本当のNEXTAGE投稿祭」 には参加できません</strong>
-              （本当のNEXTAGEの参加条件、本当のルーキー祭りに参加できないことに反するため）。
-              本当のNEXTAGEを創設の目的は、本当のルーキー祭りのレベルインフレに歯止めを掛け、初心者の参加障壁を下げるためです。参加機会の増加ではありません。
+              （本当のNEXTAGEの参加条件、本当のルーキー歌い手祭りに参加できないことに反するため）。
+              本当のNEXTAGEを創設の目的は、本当のルーキー歌い手祭りのレベルインフレに歯止めを掛け、初心者の参加障壁を下げるためです。参加機会の増加ではありません。
               趣旨のご理解をお願いします。
             </li>
           </ul>
@@ -71,7 +71,7 @@ export default function Rules() {
           <ul className="list-disc list-outside ml-6 space-y-2">
             <li>
               ニコニコ動画に投稿して、
-              <strong>「本当のルーキー祭り2026秋」</strong>
+              <strong>「本当のルーキー歌い手祭り2026冬」</strong>
               のタグを設定し、タグロックしてください。
               <br />
               ※参加作品以外（MV、二次創作、宣伝用のショート動画など）への使用は禁止
@@ -87,10 +87,10 @@ export default function Rules() {
             </div>
             <li>下記の文章を動画説明欄に記載してください。</li>
             <div className="my-4 bg-slate-100 border-slate-200 pl-4 py-4">
-              「本楽曲は本当のルーキー祭り2026秋 DiscXX収録曲です。
+              「本楽曲は本当のルーキー歌い手祭り2026冬 DiscXX収録曲です。
               <br />
               下記公式Webサイトから人気投票に参加できます。」 <br />
-              公式webサイト: https://2026autumn.hontono-rookie-web.workers.dev/
+              公式webサイト: https://2026winter.hontono-utaite-web.workers.dev/
             </div>
             <p className="text-slate-600 leading-relaxed text-sm mt-2">
               ※収録Discは現時点で未定です。確定次第更新します。
@@ -141,12 +141,12 @@ export default function Rules() {
           <p className="text-slate-600 leading-relaxed text-sm mt-2 mb-4">
             詳しいルールについては
             <a
-              href="https://note.com/syn523/n/n15ed59e49077?sub_rt=share_pw"
+              href="https://note.com/syn523"
               target="_blank"
               rel="noopener noreferrer"
               className="text-link font-medium hover:underline"
             >
-              本当のルーキー祭り2026秋募集要項
+              本当のルーキー歌い手祭り2026冬募集要項
             </a>
             をご確認ください。
           </p>
@@ -243,7 +243,7 @@ export default function Rules() {
             rel="noopener noreferrer"
             className="text-link font-medium text-fg-brand hover:underline"
           >
-            本当のルーキー祭り2026秋告知曲　True Rookie5
+            本当のルーキー歌い手祭り2026冬告知曲　True Rookie5
           </a>
           <p className="text-slate-600 leading-relaxed text-sm mt-2">
             動画表現を厳密にルール化すると運営負担が大きくなるため、個別判断やパトロールは行いません。目安以外も許容しますが、参加者自身が趣旨を理解した上で判断してください。
@@ -252,7 +252,7 @@ export default function Rules() {
           </p>
           <p className="text-slate-600 leading-relaxed text-sm mt-2">
             凝ったMV作品を制作したい場合は、
-            <strong>YouTubeや「本当のルーキー祭り2026秋二次創作」タグ</strong>
+            <strong>YouTubeや「本当のルーキー歌い手祭り2026冬二次創作」タグ</strong>
             をご活用ください。これらの動画から本投稿作品への誘導ありです。(逆もOK)
           </p>
           <h3 className="text-lg font-semibold mt-4 mb-2">生成AIについて</h3>
@@ -287,7 +287,7 @@ export default function Rules() {
           </p>
           <h3 className="text-lg font-semibold mt-4 mb-2">オフボーカル・歌詞・BPMについて</h3>
           <p>
-            本投稿祭の参加曲は後日開催予定の「本当のルーキー歌い手2026秋」の課題曲として使用されます。
+            本投稿祭の参加曲は後日開催予定の「本当のルーキー歌い手祭り2026冬」の課題曲として使用されます。
           </p>
           <p className="text-slate-600 leading-relaxed text-sm mt-2">
             そのため<strong>以下の公開を必須</strong>とします。
@@ -421,7 +421,7 @@ export default function Rules() {
 
             <li>
               参加タグは通常と同じ
-              <strong>「本当のルーキー祭り2026秋」</strong>
+              <strong>「本当のルーキー歌い手祭り2026冬」</strong>
               です。
             </li>
             <li>合成音声を使用しない歌い手ボーカル作品も投稿できます。</li>
@@ -436,7 +436,7 @@ export default function Rules() {
 
             <li>
               参加タグは
-              <strong>「本当のルーキー祭り2026秋SP」</strong>
+              <strong>「本当のルーキー歌い手祭り2026冬SP」</strong>
               となります。
             </li>
 
@@ -494,17 +494,17 @@ export default function Rules() {
 
             <li>
               Xでのポストを推奨します。原曲ポストを引用リポストし、
-              <strong>#本当のルーキー祭り2026秋二次創作</strong>のハッシュタグを付けてください。
+              <strong>#本当のルーキー歌い手祭り2026冬二次創作</strong>のハッシュタグを付けてください。
             </li>
             <li>
               ニコニコ動画にアップロードする場合、
-              <strong>「本当のルーキー祭り2026秋二次創作」</strong>
+              <strong>「本当のルーキー歌い手祭り2026冬二次創作」</strong>
               をタグロックしてください。
             </li>
 
             <li>
               noteに投稿する場合、
-              <strong>「本当のルーキー祭り2026秋二次創作」</strong>
+              <strong>「本当のルーキー歌い手祭り2026冬二次創作」</strong>
               のタグをつけてください。
             </li>
 

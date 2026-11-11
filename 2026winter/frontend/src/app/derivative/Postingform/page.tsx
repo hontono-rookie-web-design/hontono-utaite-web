@@ -9,7 +9,7 @@ export default function Page() {
         <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold">二次創作 提出フォーム</h1>
 
         <p className="text-xs sm:text-sm text-gray-600 mt-2">
-          「本当のルーキー祭り2026秋」の二次創作作品の提出はこちらから行えます。
+          「本当のルーキー歌い手祭り2026冬」の二次創作作品の提出はこちらから行えます。
         </p>
         {/* 区切り線 */}
 
@@ -18,7 +18,7 @@ export default function Page() {
       {/* 説明 */}
 
       <div className="w-full max-w-[760px] mb-8 text-sm text-gray-700 leading-relaxed">
-        <p>本当のルーキー祭りでは、歌ってみたやファンアートなどの二次創作を歓迎しています。</p>
+        <p>本当のルーキー歌い手祭りでは、歌ってみたやファンアートなどの二次創作を歓迎しています。</p>
 
         <p className="mt-2">
           本サイトに掲載する二次創作作品の情報を収集するため、作品情報の提供をお願いしております（投稿者以外の回答も可能です）。
@@ -53,11 +53,11 @@ export default function Page() {
 
           <ul className="list-disc pl-5 space-y-1">
             <li>
-              ニコニコ動画に投稿する場合は、「本当のルーキー祭り2026秋二次創作」のタグをロックしてください。
+              ニコニコ動画に投稿する場合は、「本当のルーキー歌い手祭り2026冬二次創作」のタグをロックしてください。
             </li>
 
             <li>
-              noteに投稿する場合は、「本当のルーキー祭り2026秋二次創作」のタグを付けてください。
+              noteに投稿する場合は、「本当のルーキー歌い手祭り2026冬二次創作」のタグを付けてください。
             </li>
           </ul>
         </div>

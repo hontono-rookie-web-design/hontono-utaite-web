@@ -39,7 +39,7 @@ export default function Navigation({ children }: { children: React.ReactNode }) 
               prefetch={false}
               className="text-xl font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary"
             >
-              本当のルーキー祭り
+              本当のルーキー歌い手祭り
             </Link>
           </div>
         </div>
@@ -53,9 +53,9 @@ export default function Navigation({ children }: { children: React.ReactNode }) 
         <ul className="menu p-4 w-72 min-h-full bg-base-100 text-base-content border-r border-primary/10 shadow-sm">
           <div className="mb-6 mt-2 px-2">
             <h2 className="text-2xl font-bold text-slate-800">
-              本当のルーキー祭り
+              本当のルーキー歌い手祭り
               <br />
-              <span className="text-lg text-secondary">2026秋</span>
+              <span className="text-lg text-secondary">2026冬</span>
             </h2>
           </div>
 

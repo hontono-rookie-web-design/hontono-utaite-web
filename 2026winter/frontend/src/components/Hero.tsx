@@ -186,7 +186,7 @@ export default function Hero() {
 
       <div className="relative z-10 flex flex-col items-center text-center px-4 max-w-4xl mx-auto mt-[-10vh]">
         <Image
-          src="/images/2026autumn_logo.png"
+          src="/images/2026winter_logo.png"
           alt={CONFIG.event.name}
           width={2000}
           height={1300}
@@ -196,7 +196,7 @@ export default function Hero() {
         />
 
         <p className="text-xl md:text-2xl text-slate-600 mb-10 font-medium">
-          ボカロP等の新人クリエイター向け楽曲投稿イベント
+          歌い手などの新人クリエイター向け楽曲投稿イベント
         </p>
 
         <div className="flex flex-col sm:flex-row gap-4 justify-center items-center w-full">

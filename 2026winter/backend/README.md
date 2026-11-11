@@ -1,12 +1,12 @@
-# 本当のルーキー祭り2026秋 Webサイト backend
+# 本当のルーキー歌い手祭り2026冬 Webサイト backend
 
-\<yyyyseoson\> は開催期（「2026秋」「2026autumn」など）に置き換えてください。
+\<yyyyseoson\> は開催期（「2026冬」「2026winter」など）に置き換えてください。
 
 ## 構成
 
 ### ディレクトリ構成
 
-`2026autumn/backend`内のディレクトリ構成は以下。
+`2026winter/backend`内のディレクトリ構成は以下。
 
 ```
 backend
@@ -64,7 +64,7 @@ GitHub Actionsで実行する。
 
 #### スプレッドシートの作成
 
-1. 本当のルーキー祭りWebデザイン部のGoogle Driveに以下のスプレッドシートを作成する。
+1. 本当のルーキー歌い手祭りWebデザイン部のGoogle Driveに以下のスプレッドシートを作成する。
 
    | スプレッドシート名                           | 概要                               |
    | -------------------------------------------- | ---------------------------------- |
@@ -159,7 +159,7 @@ GitHub Actionsで実行する。
    ```
    pyenv install 3.12
 
-   cd 2026autumn/backend
+   cd 2026winter/backend
    pyenv local 3.12
    ```
 
@@ -196,7 +196,7 @@ GitHub Actionsで実行する。
 GOOGLE_APPLICATION_CREDENTIALS="<GoogleサービスアカウントのJSONファイルのパス>"
 # Google API アクセストークンのJSONのPathを指定する。
 GOOGLE_OAUTH_CREDENTIALS="<Google OAuthクライアントIDのJSONファイルのパス>"
-# `FORMS_FOLDER_ID`で指定したフォルダの下に、作成時刻を名前としたフォルダが作成され、その下にフォームが作成される（指定フォルダ/yyyy-MM-dd_hh-mm-ss/本当のルーキー祭り2026秋_Disc.***）
+# `FORMS_FOLDER_ID`で指定したフォルダの下に、作成時刻を名前としたフォルダが作成され、その下にフォームが作成される（指定フォルダ/yyyy-MM-dd_hh-mm-ss/本当のルーキー歌い手祭り2026冬_Disc.***）
 # URLからフォルダIDがわかる。<br>例）`https://drive.google.com/drive/folders/<folder_id>`
 FORMS_FOLDER_ID="<フォームのフォルダID>"
 # 環境変数`TEMPLATE_FORM_ID`に、人気投票フォームのテンプレートとなるフォームのIDを指定する。
@@ -316,7 +316,7 @@ APP_ENV="development"
    ```
    python -m scripts.group_daily_aggregation --phase [フェーズ]
    ```
-   実行時点での各フォームの回答数が`【公開用】人気投票投票数_2026秋`に書き込まれる。
+   実行時点での各フォームの回答数が`【公開用】人気投票投票数_2026冬`に書き込まれる。
 
 ### 順位推移グラフの作成
 

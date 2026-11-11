@@ -26,7 +26,7 @@ export default function Footer() {
           ページをご覧ください。
         </p>
       </div>
-      <p>© 2026 本当のルーキー祭り 運営</p>
+      <p>© 2026 本当のルーキー歌い手祭り 運営</p>
     </footer>
   );
 } 

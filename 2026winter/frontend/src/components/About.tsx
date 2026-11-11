@@ -7,7 +7,7 @@ export default function About() {
         <div className="text-center mb-16">
           <h2 className="text-sm font-bold tracking-widest text-secondary uppercase mb-2">About</h2>
           <h3 className="text-3xl md:text-4xl font-bold text-slate-800">
-            本当のルーキー祭りとは？
+            本当のルーキー歌い手祭りとは？
           </h3>
         </div>
 
@@ -21,7 +21,7 @@ export default function About() {
 
             <p className="text-slate-600 leading-relaxed text-sm">
               このイベントは、
-              <strong>“これからのボカロP”が新しい一歩を踏み出すきっかけ</strong>
+              <strong>“これからの歌い手”が新しい一歩を踏み出すきっかけ</strong>
               になることを大切にしています。
             </p>
           </div>
