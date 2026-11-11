@@ -1,0 +1,22 @@
+@import "tailwindcss";
+
+@plugin "daisyui" {
+  themes: autumn --default;
+}
+
+@plugin "daisyui/theme" {
+  name: "bumblebee";
+  default: true;
+  --color-primary: var(--color-amber-500);
+  --color-primary-content: var(--color-amber-950);
+  --color-secondary: var(--color-rose-900);
+  --color-secondary-content: var(--color-rose-100);
+  --color-accent: var(--color-orange-500);
+  --color-accent-content: var(--color-orange-950);
+}
+
+body {
+  font-family: var(--font-noto-sans-jp), sans-serif;
+  background-color: var(--color-base-100);
+  color-scheme: light !important;
+}
