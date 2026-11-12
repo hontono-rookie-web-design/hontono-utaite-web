@@ -6,7 +6,7 @@ const nextConfig: NextConfig = {
   },
   async redirects() {
     // 旧URL（?group=N）を /N のパス形式へ転送する
-    return ["preliminaries", "finals", "special"].map((stage) => ({
+    return ["preliminaries", "finals"].map((stage) => ({
       source: `/submissions/vote/${stage}`,
       has: [{ type: "query" as const, key: "group", value: "(?<group>\\d+)" }],
       destination: `/submissions/vote/${stage}/:group`,
@@ -87,16 +87,6 @@ const nextConfig: NextConfig = {
       // 投票ページは1時間キャッシュ
       {
         source: "/submissions/vote/:path*",
-        headers: [
-          {
-            key: "Cache-Control",
-            value: "public, max-age=3600, must-revalidate",
-          },
-        ],
-      },
-      // 二次創作提出ページは1時間キャッシュ
-      {
-        source: "/derivative/Postingform",
         headers: [
           {
             key: "Cache-Control",

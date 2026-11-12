@@ -1,5 +1,4 @@
 import argparse
-import datetime
 import os
 import warnings
 
@@ -28,10 +27,8 @@ HEADERS = [
     "deleted",
     "prelim_group_id",
     "final_group_id",
-    "sp_group_id",
     "prelim_rank",
     "final_rank",
-    "sp_rank",
 ]
 
 
@@ -51,23 +48,16 @@ def fetch_video(tag: str, limit: int = 100):
 def classify_videos(
     videos: list[dict],
     exclusion_list_sheet,
-    status_during: str,
-    status_before: str = None,
-    start_period: datetime.datetime = None,
+    status: str,
 ) -> list[dict]:
-    """除外リストと投稿期間開始時刻をもとに、各動画にstatus・excludedを付与する
-    1. 除外リストに存在するものは除外リストの移動先に従ってstatusを決定
-      （移動先の指定がなければ除外扱いとし、statusは2.のルールで決定）
-    2. 上記以外は、投稿時刻が投稿期間開始時刻より前か後かでstatusを決定
-      （投稿期間開始時刻が渡されない場合はstatus_during）
+    """除外リストをもとに、各動画にstatus・excludedを付与する
+    除外リストに存在するものは移動先に従ってstatusを決定する。
+    移動先の指定がなければ除外扱いとする。
 
     Args:
         videos (list[dict]): 動画リスト
         exclusion_list_sheet (worksheet): 除外リストのワークシート
-        status_during (str): 投稿期間内（通常時）に付与するstatus
-        status_before (str, optional): 投稿期間より前の動画に付与するstatus
-            （Noneの場合は投稿時刻による振り分けを行わない）
-        start_period (datetime.datetime, optional): 投稿期間開始時刻
+        status (str): 投稿作品に付与するstatus
 
     Returns:
         list[dict]: 各動画に"status"・"excluded"を付与したリスト
@@ -82,32 +72,17 @@ def classify_videos(
 
     for v in videos:
         excluded = False
-        status = None
+        video_status = status
 
         if v["contentId"] in destinations:
             # 除外リストに入っている動画は除外リストにしたがって振り分け
             destination = destinations[v["contentId"]]
-            if status_before is not None and destination in [
-                "ex",
-                "EX",
-            ]:
-                status = status_before
-            elif destination in ["rookie", "ROOKIE", "ルーキー"]:
-                status = status_during
-            else:
+            if destination not in ["rookie", "ROOKIE", "ルーキー"]:
                 excluded = True
                 if destination not in [None, "", "除外"]:
                     warnings.warn(f"destination of {v['contentId']}: {destination}.")
 
-        if status is None:
-            # 除外リスト未記載、または移動先の指定なしの場合は投稿時刻で振り分け
-            if status_before is not None and start_period is not None:
-                posting_time = datetime.datetime.fromisoformat(v["startTime"])
-                status = status_before if posting_time < start_period else status_during
-            else:
-                status = status_during
-
-        results.append({**v, "status": status, "excluded": excluded})
+        results.append({**v, "status": video_status, "excluded": excluded})
 
     return results
 
@@ -138,9 +113,7 @@ def update_video_list_by_tag(
     tag: str,
     video_list_sheet,
     exclusion_list_sheet,
-    status_during: str,
-    status_before: str = None,
-    start_period: datetime.datetime = None,
+    status: str,
 ):
     """タグから動画情報を取得し、video_listシートを更新する（既存の行はキー一致で上書き、なければ追加）
     group_id・順位など他の処理が書き込む列は更新しない。
@@ -149,22 +122,14 @@ def update_video_list_by_tag(
         tag (str): タグ
         video_list_sheet (worksheet): video_listワークシート
         exclusion_list_sheet (worksheet): 除外リストのワークシート（全部門共通の単一シート）
-        status_during (str): 投稿期間内（通常時）に付与するstatus
-        status_before (str, optional): 投稿期間より前の動画に付与するstatus
-        start_period (datetime.datetime, optional): 投稿期間開始時刻
+        status (str): 投稿作品に付与するstatus
     """
     videos = fetch_video(tag)
     print(f"{tag}: {len(videos)} videos")
 
-    classified_videos = classify_videos(
-        videos, exclusion_list_sheet, status_during, status_before, start_period
-    )
+    classified_videos = classify_videos(videos, exclusion_list_sheet, status)
 
     rows = [build_row(v) for v in classified_videos]
-
-    # このタグで扱うstatusの範囲のみをdeleted判定の対象にする
-    # （rookie/spを別々に処理するため、他タグ分のstatusまで誤ってdeleted扱いにしないようにする）
-    relevant_statuses = {status_during} | ({status_before} if status_before else set())
 
     sheet_client.upsert_sheet(
         video_list_sheet,
@@ -172,10 +137,10 @@ def update_video_list_by_tag(
         key="video_id",
         headers=HEADERS,
         deleted_flag_column="deleted",
-        deleted_scope=lambda row: row.get("status") in relevant_statuses,
+        deleted_scope=lambda row: row.get("status") == status,
     )
 
-    print(f"{status_during}/{status_before or ''} update completed")
+    print(f"{status} update completed")
 
 
 def main():
@@ -183,7 +148,7 @@ def main():
     parser.add_argument(
         "--keys",
         nargs="*",
-        help="実行するタグキー（例: rookie sp）。未指定の場合は全て実行",
+        help="実行するタグキー（例: rookie）。未指定の場合は全て実行",
     )
     args = parser.parse_args()
 
@@ -201,12 +166,8 @@ def main():
         exclusion_spreadsheetname, exclusion_sheet_config["sheet"]
     )
 
-    start_period_rookie = datetime.datetime.fromisoformat(
-        config["period"]["start_period"]
-    )
-
-    # このスクリプトが対象とする部門（rookie, sp）
-    target_divs = ["rookie", "sp"]
+    # このスクリプトが対象とする部門
+    target_divs = ["rookie"]
 
     # 実行対象キーの決定
     if args.keys:
@@ -228,23 +189,13 @@ def main():
 
     for div in target_keys:
         tag = tag_config[div]
-
-        if div == "rookie":
-            status_during = status_config["rookie"]
-            status_before = status_config["ex"]
-            start_period = start_period_rookie
-        else:
-            status_during = status_config["sp"]
-            status_before = None
-            start_period = None
+        status = status_config[div]
 
         update_video_list_by_tag(
             tag,
             video_list_sheet,
             exclusion_list_sheet,
-            status_during,
-            status_before,
-            start_period,
+            status,
         )
 
 

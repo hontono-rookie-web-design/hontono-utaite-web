@@ -1,6 +1,6 @@
 "use client";
 
-import { Home, Menu, Music, PlusCircle, Star, Vote } from "lucide-react";
+import { Home, Menu, Music, PlusCircle, Vote } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 
@@ -77,20 +77,6 @@ export default function Navigation({ children }: { children: React.ReactNode }) 
             </Link>
           </li>
 
-          <li>
-            <Link href="/submissions/songs/extra" prefetch={false} onClick={closeDrawer}>
-              <Music className="w-4 h-4 mr-3 text-slate-400" />
-              楽曲一覧 exステージ
-            </Link>
-          </li>
-
-          <li>
-            <Link href="/submissions/songs/special" prefetch={false} onClick={closeDrawer}>
-              <Music className="w-4 h-4 mr-3 text-slate-400" />
-              楽曲一覧 SPステージ
-            </Link>
-          </li>
-
           <li className="menu-title mt-4 text-accent font-bold tracking-widest text-xs uppercase">
             人気投票
           </li>
@@ -109,70 +95,8 @@ export default function Navigation({ children }: { children: React.ReactNode }) 
             </Link>
           </li>
 
-          <li>
-            <Link href="/submissions/vote/special" prefetch={false} onClick={closeDrawer}>
-              <Vote className="w-4 h-4 mr-3 text-slate-400" />
-              人気投票 SPステージ
-            </Link>
-          </li>
-
-          <li className="menu-title mt-4 text-primary font-bold tracking-widest text-xs uppercase">
-            二次創作
-          </li>
-
-          <li>
-            <Link href="/derivative/streams" prefetch={false} onClick={closeDrawer}>
-              <Star className="w-4 h-4 mr-3 text-slate-400" />
-              紹介配信
-            </Link>
-          </li>
-
-          <li>
-            <Link href="/derivative/articles" prefetch={false} onClick={closeDrawer}>
-              <Star className="w-4 h-4 mr-3 text-slate-400" />
-              note記事
-            </Link>
-          </li>
-
-          <li>
-            <Link href="/derivative/illustrations" prefetch={false} onClick={closeDrawer}>
-              <Star className="w-4 h-4 mr-3 text-slate-400" />
-              二次創作 イラスト
-            </Link>
-          </li>
-
-          <li>
-            <Link href="/derivative/arrangements" prefetch={false} onClick={closeDrawer}>
-              <Star className="w-4 h-4 mr-3 text-slate-400" />
-              二次創作 アレンジ
-            </Link>
-          </li>
-
-          <li>
-            <Link href="/derivative/coversongs" prefetch={false} onClick={closeDrawer}>
-              <Star className="w-4 h-4 mr-3 text-slate-400" />
-              二次創作 歌ってみた
-            </Link>
-          </li>
-
-          <li>
-            <Link href="/derivative/others" prefetch={false} onClick={closeDrawer}>
-              <Star className="w-4 h-4 mr-3 text-slate-400" />
-              二次創作 その他
-            </Link>
-          </li>
-
           <li className="mt-2">
             <Link
-              href="/derivative/Postingform"
-              prefetch={false}
-              onClick={closeDrawer}
-              className="flex items-center font-semibold transition"
-            >
-              <PlusCircle className="w-4 h-4 mr-3 text-slate-400" />
-              二次創作 提出フォーム
-            </Link>
-	    <Link
               href="/nfrs"
               prefetch={false}
               onClick={closeDrawer}

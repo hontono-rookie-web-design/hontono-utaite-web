@@ -12,7 +12,6 @@ const TITLE = "楽曲一覧 ルーキー";
 function isBeforePhase(phase: string) {
   switch (phase) {
     case EVENT_PHASES.BEFORE:
-    case EVENT_PHASES.EXTRA:
       return true;
     default:
       return false;

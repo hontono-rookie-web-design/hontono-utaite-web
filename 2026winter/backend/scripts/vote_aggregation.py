@@ -10,7 +10,7 @@ from lib import sheet_client, utils
 from lib.vote_aggregation import aggregate_votes
 from oauth2client import client, file, tools
 
-# Phase: prelim, final, sp
+# Phase: prelim, final
 
 load_dotenv()
 PHASE_CONFIG = {
@@ -36,17 +36,6 @@ PHASE_CONFIG = {
         "vote_count": "final_vote_count",
         "average_score": "final_average_score",
     },
-    "sp": {
-        "forms_env": "SP_FORMS_FOLDER_ID",
-        "aggregation_config": "sp_aggregation",
-        "public_score_config": "public_sp_score_list",
-        "score_sheet": "sp_sheet",
-        "group_id": "sp_group_id",
-        "rank": "sp_rank",
-        "score": "sp_score",
-        "vote_count": "sp_vote_count",
-        "average_score": "sp_average_score",
-    },
 }
 
 
@@ -55,7 +44,7 @@ def parse_args():
 
     parser.add_argument(
         "--phase",
-        choices=["prelim", "final", "sp"],
+        choices=["prelim", "final"],
         required=True,
     )
 

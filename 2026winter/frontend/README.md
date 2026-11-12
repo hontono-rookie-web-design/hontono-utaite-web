@@ -30,34 +30,19 @@ http://localhost:3000
 
 ## 本戦フェーズ
 
-本戦（exステージ〜決勝）は環境変数 `EVENT_PHASE` により制御します。
+本戦は環境変数 `EVENT_PHASE` により制御します。
 
 ### 設定可能な値
 
-| 値                | 内容               |
-| ----------------- | ------------------ |
-| `before`          | 開催前             |
-| `extra`           | exステージ投稿期間 |
-| `rookie`          | ルーキー投稿期間   |
-| `prelim`          | 予選投票期間       |
-| `prelim_counting` | 予選集計中         |
-| `final`           | 決勝投票期間       |
-| `final_counting`  | 決勝集計中         |
-| `after`           | イベント終了後     |
-
-## SPステージフェーズ
-
-SPステージは本戦とは独立しており、`EVENT_PHASE_SP` により制御します。
-
-### 設定可能な値
-
-| 値           | 内容     |
-| ------------ | -------- |
-| `before`     | 開催前   |
-| `submission` | 投稿期間 |
-| `voting`     | 投票期間 |
-| `counting`   | 集計中   |
-| `after`      | 終了後   |
+| 値                | 内容             |
+| ----------------- | ---------------- |
+| `before`          | 開催前           |
+| `rookie`          | ルーキー投稿期間 |
+| `prelim`          | 予選投票期間     |
+| `prelim_counting` | 予選集計中       |
+| `final`           | 決勝投票期間     |
+| `final_counting`  | 決勝集計中       |
+| `after`           | イベント終了後   |
 
 詳しくは `frontend/src/config/phase.ts`を参照してください
 
@@ -72,11 +57,7 @@ SPステージは本戦とは独立しており、`EVENT_PHASE_SP` により制�
 例：
 
 ```env
-# 本戦
 EVENT_PHASE="final"
-
-# SPステージ
-EVENT_PHASE_SP="voting"
 ```
 
 ### 本番環境のデータで試す場合
