@@ -6,34 +6,16 @@ export const CONFIG = {
   ranking: {
     prelim_cutoff: 3,
     final_cutoff: null,
-    special_cutoff: 3,
-  },
-
-  derivativesheets: {
-    spreadsheetId: process.env.SPREADSHEET_ID_DERIVATIVE!,
-    streams: { name: "紹介配信予定" },
-    archive: { name: "紹介配信アーカイブ" },
-    illustrations: { name: "イラスト" },
-    arrangements: { name: "アレンジ" },
-    coversongs: { name: "歌ってみた" },
-    others: { name: "その他" },
-  },
-
-  notesheets: {
-    spreadsheetId: process.env.SPREADSHEET_ID_NOTES!,
   },
 
   videosheets: {
     spreadsheetId: process.env.SPREADSHEET_ID_VIDEOS!,
     status: {
       rookie: { name: "ルーキー" },
-      ex: { name: "EX" },
-      sp: { name: "SP" },
     },
     stage: {
       preliminaries: { group_id: "prelim_group_id", rank: "prelim_rank", name: "予選" },
       finals: { group_id: "final_group_id", rank: "final_rank", name: "決勝" },
-      sp: { group_id: "sp_group_id", rank: "sp_rank", name: "sp" },
     },
   },
 
@@ -41,7 +23,6 @@ export const CONFIG = {
     spreadsheetId: process.env.SPREADSHEET_ID_VOTEFORM!,
     preliminaries: { name: "予選" },
     finals: { name: "決勝" },
-    sp: { name: "SP" },
   },
 
   images: {

@@ -237,7 +237,8 @@ def main():
         "--phase",
         type=str,
         required=True,
-        help="対象フェーズ（例: prelim, final, sp）",
+        choices=["prelim", "final"],
+        help="対象フェーズ（prelim, final）",
     )
     args, remaining = parser.parse_known_args()
     phase = args.phase

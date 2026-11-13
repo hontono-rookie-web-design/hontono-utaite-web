@@ -26,10 +26,7 @@ backend
 │  └ vote_grouping.py                     グループ分け関連モジュール
 ├ scripts
 │  ├ fetch_videos.py                      参加動画一覧更新スクリプト
-│  ├ fetch_note.py                        note記事一覧更新スクリプト
-│  ├ fetch_derivative.py                  二次創作一覧更新スクリプト
 │  ├ vote_grouping_preliminary.py         予選グループ作成スクリプト
-│  ├ vote_grouping_sp.py                  SPグループ作成スクリプト
 │  ├ vote_grouping_final.py               決勝グループ作成スクリプト
 │  ├ setup_forms.py                       投票フォーム作成スクリプト
 │  ├ vote_aggregation.py                  投票集計スクリプト
@@ -51,9 +48,7 @@ GitHub Actionsで実行する。
 
 | workflow                           | workflowファイル                       | 処理内容                                       |
 | ---------------------------------- | -------------------------------------- | ---------------------------------------------- |
-| \<yyyyseoson\> Fetch Videos | `<yyyyseason>_fetch_videos.yml` | Rookie、ex、SPステージの動画リストを更新する       |
-| \<yyyyseoson\> Fetch Note          | `<yyyyseason>_fetch_note.yml`          | Note記事リストを更新する                       |
-| \<yyyyseoson\> Fetch Derivative    | `<yyyyseason>_fetch_derivative.yml`    | 二次創作作品リストを更新する                   |
+| \<yyyyseoson\> Fetch Videos | `<yyyyseason>_fetch_videos.yml` | ルーキーの動画リストを更新する       |
 | \<yyyyseoson\> Group Daily Aggregation | `<yyyyseason>_group_daily_aggregation.yml` | 人気投票フォームの回答数を集計し、公開用シートに日次で追記する |
 
 ## 運用方法
@@ -69,10 +64,7 @@ GitHub Actionsで実行する。
    | スプレッドシート名                           | 概要                               |
    | -------------------------------------------- | ---------------------------------- |
    | video_list_pro                               | 参加作品動画リスト                 |
-   | note_list_pro                                | Note記事リスト                     |
-   | derivative_list_pro                          | 二次創作作品リスト                 |
    | excluded_list_pro                            | 参加作品動画の除外リスト           |
-   | 二次創作作品提出フォーム回答\_\<yyyyseoson\> | 二次創作作品提出フォーム回答リスト |
    | forms_list_pro                                | 各グループの投票フォームURLとマイリストURLのリスト |
    | score_list_pro                                | 参加作品動画の獲得スコアリスト  |
 
@@ -96,26 +88,11 @@ GitHub Actionsで実行する。
    実行頻度は、例えば以下のように設定すれば良いと思う。
    作品動画リストの更新は、ニコニコのAPIの更新が1日1回（AM5:00）なので、処理頻度を高くしてもあまり意味ない。
 
-   | 時期     | 作品動画リスト更新関連処理 | 二次創作作品・Noteリスト更新関連処理 |
-   | -------- | -------------------------- | ------------------------------------ |
-   | 投稿期間 | 毎日実行                   | 3時間おき実行                        |
-   | 投票期間 | 毎日実行（SPステージのみ） | 3時間おき実行                        |
-   | 終了後   | 実行なし                   | たまに手動実行                       |
-
-#### 二次創作作品提出フォームの作成
-
-1. 二次創作作品の情報を提出いただくGoogle Form（二次創作作品提出フォーム）を作成する。Note記事以外の二次創作作品は、このGoogle Formに回答いただいて情報を集め、リストを作成する。
-   以下の情報を記入してもらうGoogle Formを作成する（形式は過去の二次創作作品提出フォームを参照）。
-   - 二次創作者活動名
-   - 分類（イラスト/歌ってみた/アレンジ/紹介配信/紹介配信アーカイブ/その他）
-   - 配信日時（紹介配信のみ）
-   - 投稿先サービス（ニコニコ動画/YouTube/その他）
-   - 二次創作作品URL
-   - 元作品URL
-   - タイトル
-   - 画像URL
-
-1. 作成した二次創作作品提出フォームの回答を「二次創作作品提出フォーム回答リスト」スプレッドシートのフォーム回答結果シート「Forms_result」にリンクさせる。
+   | 時期     | 作品動画リスト更新関連処理 |
+   | -------- | -------------------------- |
+   | 投稿期間 | 毎日実行                   |
+   | 投票期間 | 実行なし                   |
+   | 終了後   | 実行なし                   |
 
 ### 開催中処理
 
@@ -128,21 +105,7 @@ GitHub Actionsで実行する。
      | video_id | move_to |
      | --- | --- |
      | 除外する動画ID | (空欄) |
-   - exステージ投稿期間より後（ルーキー作品投稿期間）に投稿された動画をexステージ参加動画に移動させる場合
-     | video_id | move_to |
-     | --- | --- |
-     | 移動させる動画ID | ex |
-   - ルーキー作品投稿期間より前（exステージ投稿期間）に投稿された動画をルーキー参加動画に移動させる場合
-     | video_id | move_to |
-     | --- | --- |
-     | 移動させる動画ID | ルーキー |
    - 「reason」欄はメモ用なので、備考がある場合は記載する。「動画ID」はsmなどから始まる番号。
-
-#### 二次創作作品の確認
-
-1. 二次創作作品の情報が、derivative_list_pro内のシート「derivative_list」に二次創作情報が追加されていくので、Webへの掲載可否を判断し、掲載して良いものは「check」の欄の数値を1に変更する。
-
-1. 二次創作確認用シートで、欠損のある内容や間違っている内容があれば記入・訂正を行う。
 
 ## 環境
 
@@ -202,12 +165,10 @@ FORMS_FOLDER_ID="<フォームのフォルダID>"
 # 環境変数`TEMPLATE_FORM_ID`に、人気投票フォームのテンプレートとなるフォームのIDを指定する。
 # Google Formsを作成すれば、URLからフォームIDがわかる。<br>例）`https://docs.google.com/forms/d/<forms_id>/edit`
 TEMPLATE_FORM_ID="<テンプレートフォームID>"
-DERIVATIVE_FORM_ID="<二次創作フォームID>"
 #投票フォームを作成したフォルダIDを指定する。
 #vote_aggregation.pyとplot_rank_transition.pyを実行する際に必要となる。
 PRELIM_FORMS_FOLDER_ID="<予選フォームのフォルダID>"
 FINAL_FORMS_FOLDER_ID="<決勝フォームのフォルダID>"
-SP_FORMS_FOLDER_ID="<SPフォームのフォルダID>"
 
 APP_ENV="development"
 ```
@@ -240,32 +201,12 @@ APP_ENV="development"
    ```
    参加作品動画リストが更新される。
 
-### note記事一覧更新
-
-1. `backend`ディレクトリで以下を実行
-   ```
-   python -m scripts.fetch_note
-   ```
-   Note記事リストが更新される。
-
-### 二次創作作品一覧更新
-
-1. `backend`ディレクトリで以下を実行
-   ```
-   python -m scripts.fetch_derivative
-   ```
-   二次創作作品リストが更新される。
-2. derivative_list_pro内の`derivative_list`シートを確認し、二次創作作品リストに載せる作品は「check」欄を1にする。
-
 ### 投票グループ分け
 
 1. `backend`ディレクトリで、作成するグループに対応したコマンドを実行
    ```
    # 予選
    python -m scripts.vote_grouping_preliminary
-
-   # SP
-   python -m scripts.vote_grouping_sp
 
    # 決勝（final_border以内の作品を予選グループ・順位から振り分ける）
    python -m scripts.vote_grouping_final
@@ -291,7 +232,7 @@ APP_ENV="development"
        - 回答のコピーを回答者に送信: 常に表示
        - 回答を1回に制限する: オン
 2. `backend`ディレクトリで以下を実行。
-   対象フェーズによって prelim/final/spからフェーズを指定する
+   対象フェーズによって prelim/final からフェーズを指定する
    ```
    python -m scripts.setup_forms --phase [フェーズ]
    ```
@@ -301,7 +242,7 @@ APP_ENV="development"
 ### 投票集計
 
 1. `backend`ディレクトリで以下を実行する。
-   対象フェーズによって prelim/final/spからフェーズを指定する
+   対象フェーズによって prelim/final からフェーズを指定する
 
    ```bash
    python -m scripts.vote_aggregation --phase [フェーズ]
@@ -312,7 +253,7 @@ APP_ENV="development"
 ### 各グループ投票回答数集計
 
 1. `backend`ディレクトリで以下を実行する。
-   対象フェーズによって prelim/final/spからフェーズを指定する。指定しなかった場合は全フェーズを対象に実行される。
+   対象フェーズによって prelim/final からフェーズを指定する。指定しなかった場合は全フェーズを対象に実行される。
    ```
    python -m scripts.group_daily_aggregation --phase [フェーズ]
    ```
@@ -323,7 +264,7 @@ APP_ENV="development"
 各グループの日ごとの順位推移グラフを公開する場合、以下の手順でグラフを作成する。
 
 1. `backend`ディレクトリで以下を実行
-   対象フェーズによって prelim/final/spからフェーズを指定する
+   対象フェーズによって prelim/final からフェーズを指定する
    ```
    python -m scripts.plot_rank_transition --phase [フェーズ]
    ```
