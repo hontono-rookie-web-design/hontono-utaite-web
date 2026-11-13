@@ -72,7 +72,6 @@ def classify_videos(
 
     for v in videos:
         excluded = False
-        video_status = status
 
         if v["contentId"] in destinations:
             # 除外リストに入っている動画は除外リストにしたがって振り分け
@@ -82,7 +81,7 @@ def classify_videos(
                 if destination not in [None, "", "除外"]:
                     warnings.warn(f"destination of {v['contentId']}: {destination}.")
 
-        results.append({**v, "status": video_status, "excluded": excluded})
+        results.append({**v, "status": status, "excluded": excluded})
 
     return results
 
