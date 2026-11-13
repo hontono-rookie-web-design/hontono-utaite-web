@@ -1,6 +1,6 @@
 "use client";
 
-import { Home, Menu, Music, PlusCircle, Vote } from "lucide-react";
+import { Home, Menu, Music, Vote } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 
@@ -92,18 +92,6 @@ export default function Navigation({ children }: { children: React.ReactNode }) 
             <Link href="/submissions/vote/finals" prefetch={false} onClick={closeDrawer}>
               <Vote className="w-4 h-4 mr-3 text-slate-400" />
               人気投票 決勝
-            </Link>
-          </li>
-
-          <li className="mt-2">
-            <Link
-              href="/nfrs"
-              prefetch={false}
-              onClick={closeDrawer}
-              className="flex items-center font-semibold transition"
-            >
-              <PlusCircle className="w-4 h-4 mr-3 text-slate-400" />
-              ボカナイト音源提出フォーム
             </Link>
           </li>
         </ul>
