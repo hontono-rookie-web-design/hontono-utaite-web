@@ -27,6 +27,17 @@
     "binding": "IMAGES",
   },
 
+  // Worker Previews do not inherit top-level settings.
+  // WORKER_SELF_REFERENCE is intentionally not declared here because a
+  // Preview's service binding targets the production deployment of the
+  // bound Worker.
+  // see https://developers.cloudflare.com/workers/previews/configuration/
+  "previews": {
+    "images": {
+      "binding": "IMAGES",
+    },
+  },
+
   "observability": {
     "logs": {
       "enabled": true,
