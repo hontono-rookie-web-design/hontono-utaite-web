@@ -4,7 +4,8 @@ VS Codeのインストール方法と、AIコーディングツールの導入�
 
 ## 1. VS Codeのインストール
 
-[Visual Studio Code（VS Code）](https://code.visualstudio.com/)は、Microsoftが提供する無料のコードエディタです。
+[Visual Studio Code（VS Code）](https://code.visualstudio.com/)(<img width="1418" height="837" alt="image" src="https://github.com/user-attachments/assets/c4812b1e-0f47-4988-af9d-6814f5510b8c" />)
+は、Microsoftが提供する無料のコードエディタです。
 
 ### インストール手順
 
