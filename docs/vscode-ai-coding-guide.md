@@ -1,8 +1,6 @@
 # VS CodeとAIコーディングツールの導入ガイド
 
-このドキュメントでは、VS Codeのインストール方法と、AIコーディングツールの導入方法を紹介します。
-
-初めて利用する方でも導入できるように、基本的な手順と公式ガイドへのリンクをまとめています。
+VS Codeのインストール方法と、AIコーディングツールの導入方法を紹介します。
 
 ## 1. VS Codeのインストール
 
@@ -12,95 +10,93 @@
 
 1. [VS Code公式ダウンロードページ](https://code.visualstudio.com/download)を開きます。
 2. 使用しているOS（Windows / macOS / Linux）に対応したファイルをダウンロードします。
-3. ダウンロードしたファイルを開き、画面の案内に従ってインストールします。
-4. VS Codeを起動します。
+3. 画面の案内に従ってインストールし、VS Codeを起動します。
 
-詳しくは[VS Code公式ドキュメント](https://code.visualstudio.com/docs/setup/setup-overview)を参照してください。
+<!-- スクリーンショット：VS Code公式ダウンロードページ -->
+
+詳しくは[VS Code公式インストールガイド](https://code.visualstudio.com/docs/setup/setup-overview)を参照してください。
 
 ## 2. VS Codeの拡張機能について
 
-VS Codeでは、「拡張機能」をインストールすることで、さまざまな機能を追加できます。
+VS Codeでは、「拡張機能」を追加することで、AIツールなどを利用できます。
 
 ### 拡張機能のインストール方法
 
-1. VS Codeを起動します。
-2. 左側のメニューにある「拡張機能（Extensions）」アイコンをクリックします。
-3. 検索欄にインストールしたい拡張機能の名前を入力します。
-4. 該当する拡張機能を選択して「Install」をクリックします。
+1. VS Code左側の「拡張機能（Extensions）」アイコンをクリックします。
+2. 検索欄に拡張機能の名前を入力します。
+3. 目的の拡張機能を選択し、「インストール（Install）」をクリックします。
 
-詳しくは[拡張機能の公式ガイド](https://code.visualstudio.com/docs/configure/extensions/extension-marketplace)を参照してください。
+<!-- スクリーンショット：拡張機能アイコンと検索欄 -->
 
+<!-- スクリーンショット：拡張機能のインストールボタン -->
 
-## 3. GitHubアカウントとVS Codeの連携（任意）
+詳しくは[VS Code拡張機能の公式ガイド](https://code.visualstudio.com/docs/configure/extensions/extension-marketplace)を参照してください。
 
-VS Codeでは、GitHubアカウントと連携することで、GitHub上のリポジトリを扱いやすくなります。
+## 3. GitHub Copilotの導入
 
-### 連携手順
+[GitHub Copilot](https://github.com/features/copilot)は、VS Codeでコードの補完・生成や質問への回答を行うAIツールです。
 
-1. VS Codeを起動します。
-2. 画面左下（または左側のアカウントアイコン）をクリックします。
-3. 「Sign in with GitHub」を選択します。
-4. ブラウザが開いたら、GitHubアカウントでログインし、画面の案内に従って認証します。
-5. VS Codeに戻り、サインインできていることを確認します。
-
-※ GitHubアカウントを持っていない場合は、[GitHub公式サイト](https://github.com/)から作成できます。
-
-詳しくは[VS Code公式ドキュメント（GitHubとの連携）](https://code.visualstudio.com/docs/sourcecontrol/github)を参照してください。
-
-## 4. GitHub Copilotの導入
-
-[GitHub Copilot](https://github.com/features/copilot)は、AIを利用してコードの補完や生成、質問への回答などを行うツールです。
-
-VS Code内で利用でき、GitHubアカウントでのサインインが必要です。
+**料金：無料プランあり（利用回数に制限あり）**
 
 ### 導入方法
 
-1. VS Codeを起動します。
-2. CopilotアイコンからAI機能のセットアップを開始します。
-3. GitHubアカウントでサインインします。
-4. 画面の案内に従って設定を完了します。
+1. VS CodeのCopilotアイコンから「Use AI Features」を選択します。
+2. GitHubアカウントでサインインします。
+3. 画面の案内に従って設定を完了します。
 
-VS Codeのバージョンによっては、拡張機能のインストールを案内される場合があります。
+<!-- スクリーンショット：Copilotのセットアップ画面 -->
 
-詳しくは[GitHub Copilotのセットアップガイド](https://code.visualstudio.com/docs/copilot/setup)を参照してください。
+詳しくは[GitHub Copilotのセットアップガイド](https://code.visualstudio.com/docs/setup/copilot/)を参照してください。
 
-## 5. その他のAIコーディングツール
+## 4. その他のAIコーディングツール
 
-GitHub Copilot以外にも、開発作業をサポートするAIツールがあります。
+以下の順番でおすすめします。
 
-### Codex
+### 4.1 OpenCode
 
-OpenAIが提供するAIコーディングエージェントです。コードの作成・修正や、既存コードの理解などをサポートします。
+[OpenCode](https://opencode.ai/ja)は、無料で使い始められるオープンソースのAIコーディングツールです。
 
-- [Codex公式サイト](https://openai.com/codex/)
-- [VS Codeでの導入方法](https://developers.openai.com/codex/ide)
+**料金：無料モデルあり（一部はアカウント登録不要）**
 
-### Claude Code
+初めてAIツールを利用する方には、OpenCodeをおすすめします。
 
-Anthropicが提供するAIコーディングツールです。コードの作成・修正、プロジェクト内のコードの理解などに利用できます。
+#### 導入方法
+
+1. [OpenCode公式サイト](https://opencode.ai/ja)からダウンロードしてインストールします。
+2. OpenCodeを起動します。
+3. 無料モデルを選択して利用を開始します。
+
+<!-- スクリーンショット：OpenCode公式サイトのダウンロード画面 -->
+
+<!-- スクリーンショット：OpenCodeの無料モデル選択画面 -->
+
+VS Codeと連携する場合は、[公式IDE連携ガイド](https://opencode.ai/docs/ja/ide/)を参照してください。
+
+### 4.2 Claude Code
+
+[Claude Code](https://claude.com/product/claude-code)は、Anthropicが提供するAIコーディングツールです。
+
+**料金：基本的に有料プランが必要**
+
+VS Codeの拡張機能としても利用できます。
 
 - [Claude Code公式サイト](https://claude.com/product/claude-code)
 - [VS Codeでの導入方法](https://code.claude.com/docs/en/vs-code)
 
-### OpenCode
+<!-- スクリーンショット：Claude Code拡張機能の画面 -->
 
-オープンソースのAIコーディングツールです。さまざまなAIモデルを使用でき、ターミナルやエディタから利用できます。
+### 4.3 Codex
 
-- [OpenCode公式サイト](https://opencode.ai/)
-- [VS Codeとの連携方法](https://opencode.ai/docs/ide/)
+[Codex](https://openai.com/codex/)は、OpenAIが提供するAIコーディングエージェントです。
 
-※ ツールによって、別途アカウント登録や料金が必要になる場合があります。詳しくは各公式サイトを確認してください。
+**料金：有料プラン中心（ChatGPT無料プランでも利用制限付きで使用可能）**
 
-## 6. AIツールを利用する際の注意点
+VS Codeの拡張機能としても利用できます。
 
-- AIの回答や生成したコードが必ず正しいとは限りません。使用前に内容を確認してください。
-- パスワードやAPIキーなどの機密情報を入力しないようにしてください。
-- プロジェクトの情報をAIに送信する場合は、チーム内のルールに従ってください。
-
-## 7. 参考リンク
-
-- [VS Code公式サイト](https://code.visualstudio.com/)
-- [GitHub Copilot公式サイト](https://github.com/features/copilot)
 - [Codex公式サイト](https://openai.com/codex/)
-- [Claude Code公式サイト](https://claude.com/product/claude-code)
-- [OpenCode公式サイト](https://opencode.ai/)
+- [VS Codeでの導入方法](https://developers.openai.com/codex/ide)
+- [利用プランについて](https://help.openai.com/en/articles/11369540-using-codex-with-your-chatgpt-plan)
+
+<!-- スクリーンショット：Codex拡張機能の画面 -->
+
+※ 各ツールの無料枠や利用条件は変更される場合があります。最新情報は公式サイトをご確認ください。
