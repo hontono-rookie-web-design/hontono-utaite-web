@@ -24,7 +24,7 @@ FORMS_API_SCOPES = [
 
 FORMS_DISCOVERY_DOC = "https://forms.googleapis.com/$discovery/rest?version=v1"
 
-STAGE_CHOICES = ["prelim", "final", "sp"]
+STAGE_CHOICES = ["prelim", "final"]
 
 
 def connect_sheet(spreadsheet_name, sheet_name):
@@ -222,7 +222,7 @@ def parse_args() -> argparse.Namespace:
         required=False,
         default=None,
         choices=STAGE_CHOICES,
-        help="対象ステージ（予選: prelim, 決勝: final, SP: sp。省略時は全ステージを順に処理）",
+        help="対象ステージ（予選: prelim, 決勝: final。省略時は全ステージを順に処理）",
     )
     parser.add_argument(
         "--output-spreadsheet-name",

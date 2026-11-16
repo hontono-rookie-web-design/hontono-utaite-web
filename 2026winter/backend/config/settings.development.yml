@@ -1,31 +1,13 @@
 tag:
-  rookie: "本当のルーキー祭り2026春" # ルーキー参加タグ（ルーキー・exステージ共通。旧opステージが2026秋からexステージに改称）
-  sp: "本当のルーキー祭り2026春ex" # spステージ参加タグ（旧exステージが2026秋からspステージに改称）
-  derivative: "本当のルーキー祭り2026春二次創作" # 二次創作作品タグ
-
-period:
-  start_period: "2026-04-22T17:00:00+09:00" # ルーキー投稿期間開始時刻（exステージとルーキー作品を分けるために使用。ISO形式）
+  rookie: "本当のルーキー祭り2026春" # ルーキー参加タグ
 
 status: # video_listシートのstatus列に書き込む値
   rookie: "ルーキー" # ルーキー参加作品
-  ex: "EX" # exステージ参加作品（投稿期間より前のrookieタグ作品。旧opステージ）
-  sp: "SP" # spステージ参加作品（旧exステージ）
 
 spreadsheets:
   video_list: # 参加作品動画リスト（全部門をstatus列で管理する単一シート）
     name: "video_list_dev" # スプレッドシート名（開発用）
     sheet: "video_list" # ワークシート名
-
-  # 以下は旧構造。順位の書き込みなど、video_listへの移行が未対応の処理が参照しているため残置。
-  video_catalog: # 参加作品動画リスト
-    name: "video_catalog_2026spring" # スプレッドシート名
-    rookie_sheet: "rookie" # ルーキー参加作品リストシート名
-    op_sheet: "op" # opステージ参加作品リストシート名
-    ex_sheet: "ex" # exステージ作品リストシート名
-    fanfic_sheet: "fanfic" # 二次創作作品リストシート名
-    excluded_rookie_sheet: "excluded_rookie" # 除外済動画リストシート名（opステージ、ルーキー）
-    excluded_ex_sheet: "excluded_ex" # 除外済動画リストシート名（exステージ）
-    excluded_fanfic_sheet: "excluded_fanfic" # 除外済動画リストシート名（二次創作）
 
   excluded_list: # 参加作品動画の除外リスト（全部門で共通の単一シート）
     name: "excluded_list_dev" # スプレッドシート名（開発用）
@@ -40,27 +22,10 @@ spreadsheets:
     preliminary_sheet: "予選" #予選結果シート名
     semifinal_sheet: "準決勝" #準決勝結果シート名
     final_sheet: "決勝" #決勝シート名
-    ex_sheet: "ex" #exシート名
-
-  note_list: # Note記事リスト
-    name: "note_list_dev" # スプレッドシート名（開発用）
-    list_sheet: "note_list" # Note記事リストシート名
-
-  derivative_list: # 二次創作作品リスト（全カテゴリをcategory列で管理する単一シート）
-    name: "derivative_list_dev" # スプレッドシート名（開発用）
-    sheet: "derivative_list" # ワークシート名
-
-  forms_result_derivative: # 二次創作作品提出フォーム回答リスト
-    name: "二次創作作品提出フォーム回答_2026春" # スプレッドシート名
-    forms_result: "Forms_result" # フォーム回答結果シート名（二次創作作品提出フォームの回答をリンクさせるシート）
 
   grouped_video_catalog_final: # 決勝参加の全ての動画リスト。
     name: "grouped_video_catalog_2026spring_final" # スプレッドシート名
     rookie_sheet: "rookie" # ルーキー参加作品リストシート名
-
-  grouped_video_catalog_ex: # exステージ参加の全ての動画リスト。
-    name: "grouped_video_catalog_2026spring_ex" # スプレッドシート名
-    ex_sheet: "ex" # exステージ作品リストシート名
 
   vote_form_list: # 投票フォームURL一覧（stage, group_id, form_urlの3列を持つ既存シート）
     name: "forms_list_dev" # スプレッドシート名（開発用）
@@ -73,7 +38,6 @@ spreadsheets:
     name: "score_list_dev" # スプレッドシート名（開発用）
     preliminary_sheet: "予選" #予選結果シート名
     final_sheet: "決勝" #決勝シート名
-    sp_sheet: "SP" #SPシート名
 
   public_prelim_score_list: # 予選人気投票スコア集計（公開用）
     name: "【検証用】予選結果_2026秋" # スプレッドシート名（開発用）
@@ -83,24 +47,15 @@ spreadsheets:
     name: "【検証用】決勝結果_2026秋" # スプレッドシート名（開発用）
     sheet: "score_list" # ワークシート名
 
-  public_sp_score_list:
-    name: "【検証用】SP結果_2026秋" # スプレッドシート名（開発用）
-    sheet: "score_list" # ワークシート名
-
 vote_response_aggregation: # 人気投票フォーム回答数集計のstage関連パラメータ
   stage_labels: # フォームURL一覧シートのstage列の値／集計結果シートのワークシート名として使う
     prelim: "予選"
     semifinal: "準決勝"
     final: "決勝"
-    sp: "SP"
 
 vote_grouping: # 投票グループ分け関連パラメータ
   random_seed: 42
   group_num: 70 # 予選の合計グループ数（1グループ5～6曲になる値を指定）
-
-vote_grouping_sp: # spグループ分け関連パラメータ
-  random_seed: 43
-  group_num: 8
 
 vote_grouping_final: # 決勝グループ分け関連パラメータ
   group_num: 12 # 決勝のDisc数
@@ -113,9 +68,6 @@ vote_form: # 投票フォーム関連パラメータ
   final: # 決勝
     title: "本当のルーキー祭り2026春_Best."
     item_title: "好きな作品を教えてください。"
-  sp: # spステージ
-    title: "本当のルーキー祭り2026春_SP."
-    item_title: "好きな作品を教えてください。"
 
 # 予選集計
 prelim_aggregation:
@@ -126,11 +78,5 @@ prelim_aggregation:
 # 決勝集計
 final_aggregation:
   number_of_groups: 12 # 決勝のグループ数（集計対象とする数）
-  public_rank_limit: null # 公開する順位のボーダー（nullですべての順位を公開）
-  public_score_limit: null # 公開するスコアのボーダー（nullですべてのスコアを公開）
-
-# SP集計
-sp_aggregation:
-  number_of_groups: 8 # SPのグループ数（集計対象とする数）
   public_rank_limit: null # 公開する順位のボーダー（nullですべての順位を公開）
   public_score_limit: null # 公開するスコアのボーダー（nullですべてのスコアを公開）

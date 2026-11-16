@@ -31,13 +31,11 @@ RANK_PATTERN = re.compile(r"\d+")
 PHASE_FOLDER_ENV_VARS = {
     "prelim": "PRELIM_FORMS_FOLDER_ID",
     "final": "FINAL_FORMS_FOLDER_ID",
-    "sp": "SP_FORMS_FOLDER_ID",
 }
 # フェーズごとの表示ラベル（出力ファイル名・コンソール表示に使用）
 PHASE_LABELS = {
     "prelim": "Disc.",
     "final": "Best.",
-    "sp": "SP.",
 }
 
 
@@ -304,7 +302,7 @@ def main():
         "--phase",
         choices=sorted(PHASE_FOLDER_ENV_VARS),
         default=None,
-        help="対象フェーズ（prelim/final/sp）。必須",
+        help="対象フェーズ（prelim/final）。必須",
     )
     parser.add_argument(
         "--limit",
@@ -328,7 +326,7 @@ def main():
 
     load_dotenv()
     if args.phase is None:
-        raise ValueError("--phase を指定してください（prelim/final/sp）")
+        raise ValueError("--phase を指定してください（prelim/final）")
     credentials_path = os.getenv("GOOGLE_APPLICATION_CREDENTIALS")
     if not credentials_path:
         raise RuntimeError("GOOGLE_APPLICATION_CREDENTIALS が設定されていません")

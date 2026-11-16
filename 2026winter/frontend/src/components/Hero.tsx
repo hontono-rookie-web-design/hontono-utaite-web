@@ -10,27 +10,7 @@ export default function Hero() {
   const renderCTA = () => {
     switch (phase) {
       case EVENT_PHASES.BEFORE:
-        return (
-          <Link
-            href="#rules"
-            prefetch={false}
-            className="btn btn-primary btn-lg rounded-full shadow-lg shadow-primary/30 border-none"
-          >
-            参加ルールを読む
-            <ArrowRight className="ml-2 w-5 h-5" />
-          </Link>
-        );
-      case EVENT_PHASES.EXTRA:
-        return (
-          <Link
-            href="/submissions/songs/extra"
-            prefetch={false}
-            className="btn btn-accent btn-lg rounded-full shadow-lg shadow-accent/30"
-          >
-            参加楽曲ページへ
-            <ArrowRight className="ml-2 w-5 h-5" />
-          </Link>
-        );
+        return null;
       case EVENT_PHASES.ROOKIE:
       case EVENT_PHASES.PRELIM_COUNTING:
       case EVENT_PHASES.FINAL_COUNTING:

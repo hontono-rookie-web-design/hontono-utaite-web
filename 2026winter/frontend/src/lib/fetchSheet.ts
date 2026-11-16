@@ -59,59 +59,6 @@ async function fetchSheetRows(
   }
 }
 
-export type DerivativeSheetItem = {
-  creator: string;
-  service: string;
-  workUrl: string;
-  title: string;
-  imageUrl: string;
-  originalUrl: string;
-  publishedAt: string;
-};
-
-export async function fetchDerivativeSheet(category: string): Promise<DerivativeSheetItem[]> {
-  const data = await fetchSheetRows(CONFIG.derivativesheets.spreadsheetId, "fetchDerivativeSheet");
-
-  return data
-    .filter((row) => asString(row.category) === category)
-    .filter((row) => !isDeleted(row.deleted))
-    .map((row) => ({
-      creator: asString(row.creator_name),
-      service: asString(row.posted_service),
-      workUrl: asString(row.derivative_url),
-      title: asString(row.derivative_title),
-      imageUrl: asString(row.derivative_img_url),
-      originalUrl: asString(row.original_id),
-      publishedAt: asString(row.stream_at),
-    }));
-}
-
-export type NoteSheetItem = {
-  title: string;
-  author: string;
-  publishedAt: string;
-  noteUrl: string;
-  userUrl: string;
-  eyecatchUrl: string;
-  userProfileImageUrl: string;
-};
-
-export async function fetchNoteSheet(): Promise<NoteSheetItem[]> {
-  const data = await fetchSheetRows(CONFIG.notesheets.spreadsheetId, "fetchNoteSheet");
-
-  return data
-    .filter((row) => !isDeleted(row.deleted))
-    .map((row) => ({
-      title: asString(row.article_title),
-      author: asString(row.article_author),
-      publishedAt: asString(row.posted_at),
-      noteUrl: asString(row.article_url),
-      userUrl: asString(row.author_url),
-      eyecatchUrl: asString(row.eyecatch_url),
-      userProfileImageUrl: asString(row.user_profile_img_url),
-    }));
-}
-
 export type VideoStage = {
   group_id: string;
   rank: string;
