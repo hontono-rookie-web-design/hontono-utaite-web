@@ -20,7 +20,7 @@ jobs:
     timeout-minutes: 30
     steps:
       - name: Review PR with OpenCodeReview
-        uses: alibaba/open-code-review@main
+        uses: alibaba/open-code-review@7e5ce06c88de5ce81df5dc4f24e2e485b517fae8 # v1.13.10
         with:
           llm_url: https://generativelanguage.googleapis.com/v1beta/openai/chat/completions
           llm_auth_token: ${{ secrets.GEMINI_API_KEY }}
