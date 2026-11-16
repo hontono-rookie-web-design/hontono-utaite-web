@@ -131,3 +131,43 @@ VS Codeの拡張機能としても利用できます。
 
 
 ※ 各ツールの無料枠や利用条件は変更される場合があります。最新情報は公式サイトをご確認ください。
+
+
+
+## 5. Linux・Vimを使用する場合（補足）
+
+LinuxでVimを使用している場合も、VS CodeをインストールせずにAIコーディングツールを利用できます。
+
+### GitHub Copilot
+
+GitHub Copilotには、Vim向けの公式プラグインも用意されています。
+
+- [GitHub Copilot for Vim / Neovim](https://github.com/github/copilot.vim)
+- [GitHub公式インストールガイド](https://docs.github.com/en/copilot/how-tos/copilot-in-your-ide/set-up-copilot/install-copilot-extension?tool=vimneovim)
+
+### OpenCode（おすすめ）
+
+OpenCodeはターミナルから直接起動できるため、Vimと併用できます。
+
+1. [OpenCode公式ガイド](https://opencode.ai/docs/)に従ってインストールします。
+2. プロジェクトのフォルダでターミナルを開きます。
+3. `opencode` を実行します。
+
+### Claude Code
+
+Claude Codeもターミナルから利用でき、Vimと併用できます。
+
+1. [Claude Code公式インストールガイド](https://code.claude.com/docs/en/setup)に従ってインストールします。
+2. プロジェクトのフォルダでターミナルを開きます。
+3. `claude` を実行します。
+
+### Codex
+
+CodexもCLI版を利用することで、Vimと併用できます。
+
+1. [Codex CLI公式ガイド](https://developers.openai.com/codex/cli)に従ってインストールします。
+2. プロジェクトのフォルダでターミナルを開きます。
+3. `codex` を実行します。
+
+※ これらのツールは、Vimと別のターミナルで起動して利用できます。
+
