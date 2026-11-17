@@ -16,3 +16,6 @@ token.json
 # Others
 *.csv
 **/images/**
+
+# AI
+opencode.json
