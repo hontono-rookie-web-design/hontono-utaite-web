@@ -3,12 +3,15 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 
 // The original template is 1200 x 1600. Keep this resolution for PNG exports.
+// 元のテンプレートは1200 x 1600です。PNG形式で書き出す際は、この解像度を維持してください。
 const CARD_WIDTH = 1200;
 const CARD_HEIGHT = 1600;
 const TEMPLATE_SRC = "/participation-card/template-utaite.png";
 
 // Approximate locations measured from the official Utaite template.
+// 公式の「歌い手」テンプレートから計測したおおよその位置。
 // Adjust these numbers later if the text/checkmarks need small corrections.
+// テキストやチェックマークに微調整が必​​要な場合は、後から数値を修正してください。
 const PROFILE_X = 272;
 const PROFILE_Y = 391;
 const PROFILE_RADIUS_X = 222;
@@ -63,6 +66,7 @@ function drawProfileImage(
   ctx.save();
 
   // Match the slightly elliptical frame in the template.
+  // テンプレート内の、わずかに楕円形のフレームに合わせる。
   ctx.beginPath();
   ctx.ellipse(
     PROFILE_X,
@@ -105,8 +109,8 @@ function drawCheck(ctx: CanvasRenderingContext2D, x: number, y: number) {
   ctx.restore();
 }
 
-// Single-line text: use a smaller actual font size as needed, rather than
-// horizontally squashing the characters with fillText(maxWidth).
+// Single-line text: use a smaller actual font size as needed, rather than horizontally squashing the characters with fillText(maxWidth).
+// 1行のテキスト：fillText(maxWidth) を使って文字を横方向に押しつぶすのではなく、必要に応じて、実際のフォントサイズを小さくする。
 
 function drawFittedText(
   ctx: CanvasRenderingContext2D,
@@ -140,7 +144,9 @@ function drawFittedText(
 
 
 // Wrap text and center the entire text block within its white rectangle.
+// テキストを折り返し、白い長方形の中でテキストブロック全体を中央に配置する。
 // Reduce the actual font size if needed; do not stretch/squash characters.
+// 必要に応じてフォントサイズを小さくすること。文字を引き伸ばしたり、押しつぶしたりしてはならない。
 function drawCenteredWrappedText(
   ctx: CanvasRenderingContext2D,
   text: string,
@@ -163,6 +169,7 @@ function drawCenteredWrappedText(
   let lineHeight = 0;
 
   // Choose a font size that keeps the whole wrapped block in the box.
+  // 折り返されたブロック全体がボックス内に収まるようなフォントサイズを選択してください。
   for (; size >= minSize; size--) {
     ctx.font = `bold ${size}px sans-serif`;
     lines = wrapLines(ctx, text, maxWidth);
@@ -176,6 +183,7 @@ function drawCenteredWrappedText(
   lineHeight = size * 1.3;
 
   // Even at the minimum font size, never draw outside the text area.
+  // 最小フォントサイズであっても、テキスト領域の外側には決して描画しないこと。
   const maxVisibleLines = Math.max(1, Math.floor(maxHeight / lineHeight));
   const visibleLines = lines.slice(0, maxVisibleLines);
   if (lines.length > maxVisibleLines) {
@@ -188,6 +196,7 @@ function drawCenteredWrappedText(
   }
 
   // Vertically center the whole group, not just the first line.
+  // 最初の行だけでなく、グループ全体を垂直方向に中央揃えにする。
   const firstY = centerY - ((visibleLines.length - 1) * lineHeight) / 2;
 
   ctx.beginPath();
@@ -220,6 +229,7 @@ function wrapLines(ctx: CanvasRenderingContext2D, text: string, maxWidth: number
 }
 
 // Center the final message inside the large bottom white rectangle.
+// 最後のメッセージを、下部にある大きな白い長方形の中央に配置する。
 function drawMessage(ctx: CanvasRenderingContext2D, message: string) {
   drawCenteredWrappedText(ctx, message, 600, 1434, 1040, 166, 40, 22);
 }
@@ -233,6 +243,7 @@ async function renderCard(
   if (!ctx) throw new Error("Canvasを使用できませんでした。");
 
   // Wait for all images/fonts before drawing, including on download.
+  // 描画の前に、すべての画像やフォントが（ダウンロードを含め）揃うのを待つ。
   const [template, profile] = await Promise.all([
     loadImage(TEMPLATE_SRC),
     values.profileImage ? loadImage(values.profileImage) : Promise.resolve(null),
@@ -262,7 +273,9 @@ async function renderCard(
   }
 
   // My Favorite fields: centered in both directions, with automatic wrapping.
+  // 「お気に入り」フィールド：縦横ともに中央揃えで、自動折り返しあり。
   // The white rectangles are x=38..585 / 628..1175 and y=756..894 / 960..1098.
+  // 白い長方形の範囲は、x=38～585 / 628～1175、y=756～894 / 960～1098 です。
   drawCenteredWrappedText(ctx, values.genre, 311, 826, 490, 110, 38, 18);
   drawCenteredWrappedText(ctx, values.favoriteSinger, 902, 826, 490, 110, 38, 18);
   drawCenteredWrappedText(ctx, values.favoriteSongOrVocaloidP, 311, 1028, 490, 110, 38, 18);
@@ -379,6 +392,7 @@ export default function ParticipationCardPage() {
     setExporting(true);
     try {
       // Render again from current React state, not a potentially stale preview.
+      // 古くなっている可能性があるプレビューではなく、現在のReact状態から再レンダリングする。
       const exportCanvas = document.createElement("canvas");
       await renderCard(exportCanvas, values);
       const blob = await new Promise<Blob>((resolve, reject) => {
