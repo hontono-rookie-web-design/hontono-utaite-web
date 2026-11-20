@@ -14,7 +14,7 @@ const notoSansJP = Noto_Sans_JP({
 export const metadata: Metadata = {
   title: "本当のルーキー歌い手祭り2026冬",
   description:
-    "歌い手などの新人クリエイターを対象とした楽曲投稿・投票イベント「本当のルーキー歌い手祭り2026冬」の特設サイト",
+    "歌い手とボカロP、そしてリスナーを繋ぐ、本当のルーキー祭りの曲を歌う投稿祭「本当のルーキー歌い手祭り2026冬」の特設サイト",
   metadataBase: CONFIG.siteUrl ? new URL(CONFIG.siteUrl) : undefined,
   icons: {
     icon: [
@@ -32,7 +32,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "本当のルーキー歌い手祭り2026冬",
     description:
-      "歌い手などの新人クリエイターを対象とした楽曲投稿・投票イベント「本当のルーキー歌い手祭り2026冬」の特設サイト",
+      "歌い手とボカロP、そしてリスナーを繋ぐ、本当のルーキー祭りの曲を歌う投稿祭「本当のルーキー歌い手祭り2026冬」の特設サイト",
     images: [{ url: "/images/2026winter_ogp.png" }],
     type: "website",
   },
@@ -40,7 +40,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "本当のルーキー歌い手祭り2026冬",
     description:
-      "歌い手などの新人クリエイターを対象とした楽曲投稿・投票イベント「本当のルーキー歌い手祭り2026冬」の特設サイト",
+      "歌い手とボカロP、そしてリスナーを繋ぐ、本当のルーキー祭りの曲を歌う投稿祭「本当のルーキー歌い手祭り2026冬」の特設サイト",
     images: ["/images/2026winter_ogp.png"],
   },
 };

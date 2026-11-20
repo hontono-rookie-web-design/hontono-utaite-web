@@ -176,7 +176,7 @@ export default function Hero() {
         />
 
         <p className="text-xl md:text-2xl text-slate-600 mb-10 font-medium">
-          歌い手等の新人クリエイター向け楽曲投稿イベント
+          本当のルーキー祭りの曲を歌う投稿祭「本当のルーキー歌い手祭り2026冬」の特設サイト
         </p>
 
         <div className="flex flex-col sm:flex-row gap-4 justify-center items-center w-full">
