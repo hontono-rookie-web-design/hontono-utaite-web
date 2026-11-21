@@ -166,7 +166,7 @@ export default function Hero() {
 
       <div className="relative z-10 flex flex-col items-center text-center px-4 max-w-4xl mx-auto mt-[-10vh]">
         <Image
-          src="/images/2026autumn_logo.png"
+          src="/images/2026winter_logo.png"
           alt={CONFIG.event.name}
           width={2000}
           height={1300}
@@ -176,7 +176,7 @@ export default function Hero() {
         />
 
         <p className="text-xl md:text-2xl text-slate-600 mb-10 font-medium">
-          ボカロP等の新人クリエイター向け楽曲投稿イベント
+          本当のルーキー祭りの曲を歌う投稿祭「本当のルーキー歌い手祭り2026冬」の特設サイト
         </p>
 
         <div className="flex flex-col sm:flex-row gap-4 justify-center items-center w-full">
@@ -186,7 +186,7 @@ export default function Hero() {
         <p className="mt-8 text-sm text-slate-500 max-w-md mx-auto">
           投稿祭の進行は
           <a
-            href="https://x.com/SynNightPsub?s=20"
+            href="https://x.com/hontono_utaite"
             target="_blank"
             rel="noopener noreferrer"
             className="text-link font-medium hover:underline"
