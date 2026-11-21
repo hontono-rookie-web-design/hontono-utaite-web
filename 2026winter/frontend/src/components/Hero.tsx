@@ -186,7 +186,7 @@ export default function Hero() {
         <p className="mt-8 text-sm text-slate-500 max-w-md mx-auto">
           投稿祭の進行は
           <a
-            href="https://x.com/SynNightPsub?s=20"
+            href="https://x.com/hontono_utaite"
             target="_blank"
             rel="noopener noreferrer"
             className="text-link font-medium hover:underline"

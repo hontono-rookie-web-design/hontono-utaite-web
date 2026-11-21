@@ -16,7 +16,7 @@ export default function Contact() {
 
           <div className="flex flex-wrap justify-center gap-4">
             <a
-              href="https://x.com/SynNightPsub?s=20"
+              href="https://x.com/hontono_utaite"
               target="_blank"
               rel="noopener noreferrer"
               className="btn btn-outline text-base-content"
@@ -25,7 +25,7 @@ export default function Contact() {
             </a>
 
             <a
-              href="https://discord.gg/XfM6KqZbPT"
+              href="https://discord.com/invite/ku8kqgKqwy"
               target="_blank"
               rel="noopener noreferrer"
               className="btn btn-outline text-base-content"

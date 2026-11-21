@@ -3,8 +3,8 @@ import { Link as LinkIcon } from "lucide-react";
 export default function RelatedLinks() {
   const guidelineLinks = [
     {
-      title: "本当のルーキー歌い手祭り2026冬投稿者募集要項",
-      desc: "投稿者向け募集要項です。",
+      title: "本当のルーキー歌い手祭り2026冬Twipla",
+      desc: "イベント詳細はこちら",
       url: "https://twipla.jp/events/741530",
     },
   ];
