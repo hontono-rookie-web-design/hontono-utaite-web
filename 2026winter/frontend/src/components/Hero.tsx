@@ -35,17 +35,6 @@ export default function Hero() {
             <ArrowRight className="ml-2 w-5 h-5" />
           </Link>
         );
-      case EVENT_PHASES.SEMIFINAL:
-        return (
-          <Link
-            href="/submissions/vote/semifinals"
-            prefetch={false}
-            className="btn btn-accent btn-lg rounded-full shadow-lg shadow-accent/30"
-          >
-            人気投票ページへ
-            <ArrowRight className="ml-2 w-5 h-5" />
-          </Link>
-        );
       case EVENT_PHASES.FINAL:
         return (
           <Link
