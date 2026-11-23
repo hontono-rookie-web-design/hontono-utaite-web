@@ -13,14 +13,9 @@ spreadsheets:
     name: "excluded_list_dev" # スプレッドシート名（開発用）
     sheet: "excluded_list" # ワークシート名
 
-  video_catalog_semifinal: # 準決勝進出作品動画リスト
-    name: "video_catalog_2026winter_semifinal" # スプレッドシート名
-    rookie_sheet: "rookie" # ルーキー参加作品リストシート名
-
   ranking_result: #投票結果のシート
     name: "人気投票順位_2026冬" #スプレッドシート名
     preliminary_sheet: "予選" #予選結果シート名
-    semifinal_sheet: "準決勝" #準決勝結果シート名
     final_sheet: "決勝" #決勝シート名
 
   grouped_video_catalog_final: # 決勝参加の全ての動画リスト。
@@ -50,7 +45,6 @@ spreadsheets:
 vote_response_aggregation: # 人気投票フォーム回答数集計のstage関連パラメータ
   stage_labels: # フォームURL一覧シートのstage列の値／集計結果シートのワークシート名として使う
     prelim: "予選"
-    semifinal: "準決勝"
     final: "決勝"
 
 vote_grouping: # 投票グループ分け関連パラメータ

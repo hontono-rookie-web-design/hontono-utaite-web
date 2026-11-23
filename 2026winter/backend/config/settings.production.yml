@@ -13,14 +13,9 @@ spreadsheets:
     name: "excluded_list_pro" # スプレッドシート名（本番用）
     sheet: "excluded_list" # ワークシート名
 
-  video_catalog_semifinal: # 準決勝進出作品動画リスト
-    name: "video_catalog_2026winter_semifinal" # スプレッドシート名
-    rookie_sheet: "rookie" # ルーキー参加作品リストシート名
-
   ranking_result: #投票結果のシート
     name: "人気投票順位_2026冬" #スプレッドシート名
     preliminary_sheet: "予選" #予選結果シート名
-    semifinal_sheet: "準決勝" #準決勝結果シート名
     final_sheet: "決勝" #決勝シート名
 
   grouped_video_catalog_final: # 決勝参加の全ての動画リスト。
