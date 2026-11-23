@@ -3,32 +3,22 @@ import { Link as LinkIcon } from "lucide-react";
 export default function RelatedLinks() {
   const guidelineLinks = [
     {
-      title: "本当のルーキー祭り2026秋投稿者募集要項",
-      desc: "投稿者向け募集要項です。",
-      url: "https://note.com/syn523/n/n15ed59e49077?sub_rt=share_pw",
-    }
+      title: "本当のルーキー歌い手祭り2026冬Twipla",
+      desc: "イベント詳細はこちら",
+      url: "https://twipla.jp/events/741530",
+    },
   ];
 
   const resourceLinks = [
     {
-      title: "本当のルーキー祭り公式X",
+      title: "本当のルーキー歌い手祭り公式X",
       desc: "最新情報やQ&Aを発信しています。",
-      url: "https://x.com/SynNightPsub?s=20",
+      url: "https://x.com/hontono_utaite",
     },
     {
-      title: "本当のルーキー祭り公式Discord",
+      title: "本当のルーキー歌い手祭り公式Discord",
       desc: "質問や交流はこちらでどうぞ。",
-      url: "https://discord.gg/XfM6KqZbPT",
-    },
-    {
-      title: "本当のルーキー祭り2026秋TwiPla",
-      desc: "イベントの詳細やスケジュールを掲載しています。",
-      url: "https://twipla.jp/events/731912",
-    },
-    {
-      title: "認定活動者",
-      desc: "作品制作に活用してください。",
-      url: "https://note.com/syn523/n/n9150f6246aef?sub_rt=share_pw",
+      url: "https://discord.com/invite/ku8kqgKqwy",
     },
   ];
 
