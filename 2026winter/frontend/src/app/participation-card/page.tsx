@@ -28,6 +28,8 @@ const PLATFORM_OPTIONS = [
 type Platform = (typeof PLATFORM_OPTIONS)[number]["value"];
 type StageChoice = "yes" | "no" | "";
 type AfterpartyChoice = "yes" | "no" | "what" | "";
+type FavoriteType = "song" | "vocaloidP";
+type FavoriteMarkStyle = "underline" | "check";
 
 type CardValues = {
   name: string;
@@ -37,6 +39,8 @@ type CardValues = {
   genre: string;
   favoriteSinger: string;
   favoriteSongOrVocaloidP: string;
+  favoriteTypes: FavoriteType[];
+  favoriteMarkStyle: FavoriteMarkStyle;
   stageChoice: StageChoice;
   afterpartyChoice: AfterpartyChoice;
   message: string;
@@ -106,6 +110,26 @@ function drawCheck(ctx: CanvasRenderingContext2D, x: number, y: number) {
   ctx.lineTo(x - 3, y + 9);
   ctx.lineTo(x + 14, y - 13);
   ctx.stroke();
+  ctx.restore();
+}
+
+function drawUnderline(
+  ctx: CanvasRenderingContext2D,
+  startX: number,
+  endX: number,
+  y: number,
+) {
+  ctx.save();
+
+  ctx.strokeStyle = "#FF0208";
+  ctx.lineWidth = 5;
+  ctx.lineCap = "round";
+
+  ctx.beginPath();
+  ctx.moveTo(startX, y);
+  ctx.lineTo(endX, y);
+  ctx.stroke();
+
   ctx.restore();
 }
 
@@ -280,6 +304,26 @@ async function renderCard(
   drawCenteredWrappedText(ctx, values.favoriteSinger, 902, 826, 490, 110, 38, 18);
   drawCenteredWrappedText(ctx, values.favoriteSongOrVocaloidP, 311, 1028, 490, 110, 38, 18);
 
+  // Display either underlines or checkmarks.
+  // 下線またはチェックマークのいずれかを表示する。
+  if (values.favoriteMarkStyle === "underline") {
+    if (values.favoriteTypes.includes("song")) {
+      drawUnderline(ctx, 65, 251, 951);
+    }
+
+    if (values.favoriteTypes.includes("vocaloidP")) {
+      drawUnderline(ctx, 350, 505, 951);
+    }
+  } else {
+    if (values.favoriteTypes.includes("song")) {
+      drawCheck(ctx, 247, 947);
+    }
+
+    if (values.favoriteTypes.includes("vocaloidP")) {
+      drawCheck(ctx, 495, 947);
+    }
+  }
+
   // 無名歌唱ステージ参加（single choice）
   if (values.stageChoice === "yes") drawCheck(ctx, 672, 1002);
   if (values.stageChoice === "no") drawCheck(ctx, 672, 1039);
@@ -326,6 +370,9 @@ export default function ParticipationCardPage() {
   const [genre, setGenre] = useState("");
   const [favoriteSinger, setFavoriteSinger] = useState("");
   const [favoriteSongOrVocaloidP, setFavoriteSongOrVocaloidP] = useState("");
+  const [favoriteTypes, setFavoriteTypes] = useState<FavoriteType[]>([]);
+  const [favoriteMarkStyle, setFavoriteMarkStyle] =
+  useState<FavoriteMarkStyle>("underline");
   const [stageChoice, setStageChoice] = useState<StageChoice>("");
   const [afterpartyChoice, setAfterpartyChoice] = useState<AfterpartyChoice>("");
   const [message, setMessage] = useState("");
@@ -340,11 +387,13 @@ export default function ParticipationCardPage() {
     genre,
     favoriteSinger,
     favoriteSongOrVocaloidP,
+    favoriteTypes,
+    favoriteMarkStyle,
     stageChoice,
     afterpartyChoice,
     message,
   }), [name, profileImage, platforms, otherPlatform, genre, favoriteSinger,
-      favoriteSongOrVocaloidP, stageChoice, afterpartyChoice, message]);
+      favoriteSongOrVocaloidP, favoriteTypes, favoriteMarkStyle, stageChoice, afterpartyChoice, message]);
 
   useEffect(() => {
     let cancelled = false;
@@ -384,6 +433,14 @@ export default function ParticipationCardPage() {
       previous.includes(platform)
         ? previous.filter((item) => item !== platform)
         : [...previous, platform],
+    );
+  }
+
+  function toggleFavoriteType(type: FavoriteType) {
+    setFavoriteTypes((previous) =>
+      previous.includes(type)
+        ? previous.filter((item) => item !== type)
+        : [...previous, type],
     );
   }
 
@@ -444,8 +501,14 @@ export default function ParticipationCardPage() {
 
         <div style={sectionStyle}>
           <label htmlFor="utaite-avatar"><strong>プロフィール画像</strong></label>
-          <input id="utaite-avatar" ref={fileInputRef} type="file"
-            accept="image/png,image/jpeg,image/webp" onChange={handleImageUpload} />
+          <input
+            id="utaite-avatar"
+            ref={fileInputRef}
+            type="file"
+            accept="image/png,image/jpeg,image/webp"
+            onChange={handleImageUpload}
+            className="w-full cursor-pointer rounded-lg border-2 border-base-content/30 bg-base-100 p-2 text-sm file:mr-4 file:cursor-pointer file:rounded-md file:border file:border-primary/40 file:bg-primary/10 file:px-4 file:py-2 file:font-semibold file:text-base-content hover:border-primary/70"
+          />
           <small>PNG / JPG / WebP（最大5MB）</small>
           {profileImage && (
             <button type="button" onClick={() => {
@@ -484,14 +547,80 @@ export default function ParticipationCardPage() {
         </label>
         <label style={sectionStyle}>
           <strong>好きな歌い手（最大51文字）</strong>
-          <input style={fieldStyle} value={favoriteSinger} maxLength={51}
-            onChange={(event) => setFavoriteSinger(event.target.value)} />
+          <input
+            style={fieldStyle}
+            value={favoriteSinger}
+            maxLength={51}
+            onChange={(event) => setFavoriteSinger(event.target.value)}
+          />
         </label>
-        <label style={sectionStyle}>
+        <div style={sectionStyle}>
           <strong>好きな曲 or ボカロP（最大51文字）</strong>
-          <input style={fieldStyle} value={favoriteSongOrVocaloidP} maxLength={51}
-            onChange={(event) => setFavoriteSongOrVocaloidP(event.target.value)} />
-        </label>
+
+          
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            flexWrap: "wrap",
+            gap: "12px 20px",
+          }}
+        >
+          <label style={choiceStyle}>
+            <input
+              type="checkbox"
+              checked={favoriteTypes.includes("song")}
+              onChange={() => toggleFavoriteType("song")}
+            />
+            好きな曲
+          </label>
+
+          <label style={choiceStyle}>
+            <input
+              type="checkbox"
+              checked={favoriteTypes.includes("vocaloidP")}
+              onChange={() => toggleFavoriteType("vocaloidP")}
+            />
+            ボカロP
+          </label>
+
+          <span style={{ marginLeft: "auto", fontSize: 14 }}>
+            表示形式：
+          </span>
+
+          <label style={choiceStyle}>
+            <input
+              type="radio"
+              name="favorite-mark-style"
+              checked={favoriteMarkStyle === "underline"}
+              onChange={() => setFavoriteMarkStyle("underline")}
+            />
+            下線
+          </label>
+
+          <label style={choiceStyle}>
+            <input
+              type="radio"
+              name="favorite-mark-style"
+              checked={favoriteMarkStyle === "check"}
+              onChange={() => setFavoriteMarkStyle("check")}
+            />
+            チェック
+          </label>
+        </div>
+
+          <input
+            style={fieldStyle}
+            value={favoriteSongOrVocaloidP}
+            maxLength={51}
+            onChange={(event) =>
+              setFavoriteSongOrVocaloidP(event.target.value)
+            }
+            placeholder="好きな曲名やボカロP名を入力"
+          />
+
+          <small>両方選択できます。選択した表示形式でマークが付きます。</small>
+        </div>
 
         <fieldset style={{ ...sectionStyle, border: "1px solid #d0d0d0", borderRadius: 8, padding: 14 }}>
           <legend style={{ fontWeight: 700 }}>無名歌唱ステージ参加</legend>

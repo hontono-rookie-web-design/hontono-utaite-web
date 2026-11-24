@@ -1,5 +1,6 @@
 
 import Link from "next/link";
+import Image from "next/image";
 
 export default function ParticipationCardEntry() {
   return (
@@ -13,6 +14,16 @@ export default function ParticipationCardEntry() {
           名前やプロフィール画像などを入力して、
           参加表明カードを簡単に作成できます！
         </p>
+
+        <div className="mb-6 flex justify-center">
+          <Image
+            src="/participation-card/template-utaite.png"
+            alt="参加表明カードのサンプル"
+            width={1200}
+            height={1600}
+            className="h-auto w-32 rounded-lg border border-gray-200 shadow-sm sm:w-40"
+          />
+        </div>
 
         <Link
           href="/participation-card"
