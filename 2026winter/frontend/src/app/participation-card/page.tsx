@@ -56,6 +56,23 @@ function loadImage(src: string): Promise<HTMLImageElement> {
 }
 
 
+function loadCachedImage(
+  src: string,
+  cache: Map<string, Promise<HTMLImageElement>>,
+): Promise<HTMLImageElement> {
+  const cached = cache.get(src);
+  if (cached) return cached;
+
+  const pending = loadImage(src).catch((error: unknown) => {
+    cache.delete(src);
+    throw error;
+  });
+
+  cache.set(src, pending);
+  return pending;
+}
+
+
 function drawProfileImage(
   ctx: CanvasRenderingContext2D,
   image: HTMLImageElement,
@@ -261,6 +278,7 @@ function drawMessage(ctx: CanvasRenderingContext2D, message: string) {
 async function renderCard(
   canvas: HTMLCanvasElement,
   values: CardValues,
+  imageCache: Map<string, Promise<HTMLImageElement>>,
   isCancelled: () => boolean = () => false,
 ) {
   const ctx = canvas.getContext("2d");
@@ -269,8 +287,10 @@ async function renderCard(
   // Wait for all images/fonts before drawing, including on download.
   // 描画の前に、すべての画像やフォントが（ダウンロードを含め）揃うのを待つ。
   const [template, profile] = await Promise.all([
-    loadImage(TEMPLATE_SRC),
-    values.profileImage ? loadImage(values.profileImage) : Promise.resolve(null),
+    loadCachedImage(TEMPLATE_SRC, imageCache),
+    values.profileImage
+      ? loadCachedImage(values.profileImage, imageCache)
+      : Promise.resolve(null),
     document.fonts.ready,
   ]);
 
@@ -337,32 +357,25 @@ async function renderCard(
   drawMessage(ctx, values.message);
 }
 
-const fieldStyle: React.CSSProperties = {
-  width: "100%",
-  padding: "10px 12px",
-  border: "1px solid #b8bec7",
-  borderRadius: 8,
-  background: "white",
-  color: "#20252b",
-  fontSize: 16,
-  boxSizing: "border-box",
-};
+const fieldClass =
+  "w-full rounded-lg border border-[#b8bec7] bg-white px-3 py-2.5 text-base text-[#20252b]";
 
-const sectionStyle: React.CSSProperties = {
-  display: "grid",
-  gap: 8,
-};
+const sectionClass = "grid gap-2";
 
-const choiceStyle: React.CSSProperties = {
-  display: "flex",
-  alignItems: "center",
-  gap: 8,
-  cursor: "pointer",
-};
+const choiceClass = "flex cursor-pointer items-center gap-2";
+
+const fieldsetClass =
+  "grid gap-2 rounded-lg border border-[#d0d0d0] p-3.5";
+
+const smallButtonClass =
+  "w-fit cursor-pointer rounded-lg border border-[#b8bec7] bg-white px-3 py-2.5 text-base text-[#20252b] hover:bg-gray-100";
 
 export default function ParticipationCardPage() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const imageCacheRef = useRef(
+    new Map<string, Promise<HTMLImageElement>>(),
+  );
   const [name, setName] = useState("");
   const [profileImage, setProfileImage] = useState<string | null>(null);
   const [platforms, setPlatforms] = useState<Platform[]>([]);
@@ -399,7 +412,12 @@ export default function ParticipationCardPage() {
     let cancelled = false;
     const canvas = canvasRef.current;
     if (!canvas) return;
-    renderCard(canvas, values, () => cancelled).catch((err: unknown) => {
+    renderCard(
+      canvas,
+      values,
+      imageCacheRef.current,
+      () => cancelled,
+    ).catch((err: unknown) => {
       if (!cancelled) {
         console.error("Preview rendering failed:", err);
         setError("プレビューを表示できませんでした。画像ファイルの配置を確認してください。");
@@ -408,25 +426,43 @@ export default function ParticipationCardPage() {
     return () => { cancelled = true; };
   }, [values]);
 
-  function handleImageUpload(event: React.ChangeEvent<HTMLInputElement>) {
+  useEffect(() => {
+    if (!profileImage) return;
+
+    const cache = imageCacheRef.current;
+    const objectUrl = profileImage;
+
+    return () => {
+      cache.delete(objectUrl);
+      URL.revokeObjectURL(objectUrl);
+    };
+  }, [profileImage]);
+
+
+  function handleImageUpload(
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) {
     const file = event.target.files?.[0];
     if (!file) return;
+
     setError("");
+
     if (!["image/png", "image/jpeg", "image/webp"].includes(file.type)) {
       setError("PNG、JPG、WebP画像を選択してください。");
+      event.target.value = "";
       return;
     }
+
     if (file.size > 5 * 1024 * 1024) {
       setError("画像サイズは5MB以下にしてください。");
+      event.target.value = "";
       return;
     }
-    const reader = new FileReader();
-    reader.onload = () => {
-      if (typeof reader.result === "string") setProfileImage(reader.result);
-    };
-    reader.onerror = () => setError("画像の読み込みに失敗しました。");
-    reader.readAsDataURL(file);
+
+    const objectUrl = URL.createObjectURL(file);
+    setProfileImage(objectUrl);
   }
+
 
   function togglePlatform(platform: Platform) {
     setPlatforms((previous) =>
@@ -451,7 +487,7 @@ export default function ParticipationCardPage() {
       // Render again from current React state, not a potentially stale preview.
       // 古くなっている可能性があるプレビューではなく、現在のReact状態から再レンダリングする。
       const exportCanvas = document.createElement("canvas");
-      await renderCard(exportCanvas, values);
+      await renderCard(exportCanvas, values, imageCacheRef.current);
       const blob = await new Promise<Blob>((resolve, reject) => {
         exportCanvas.toBlob((result) => {
           if (result) resolve(result);
@@ -475,11 +511,11 @@ export default function ParticipationCardPage() {
   }
 
   return (
-    <main style={{ maxWidth: 760, margin: "0 auto", padding: "32px 16px 64px", color: "inherit" }}>
-      <h1 style={{ fontSize: 26, fontWeight: 700, marginBottom: 8 }}>
+    <main className="mx-auto max-w-[760px] px-4 pb-16 pt-8 text-inherit">
+      <h1 className="mb-2 text-[26px] font-bold">
         歌い手祭り 参加表明カードメーカー
       </h1>
-      <p style={{ marginBottom: 22 }}>
+      <p className="mb-[22px]">
         情報を入力して、参加表明カードをPNG画像として保存できます。
       </p>
 
@@ -489,18 +525,26 @@ export default function ParticipationCardPage() {
         height={CARD_HEIGHT}
         role="img"
         aria-label="参加表明カードのプレビュー"
-        style={{ width: "100%", height: "auto", display: "block", border: "1px solid #d0d0d0", borderRadius: 8, marginBottom: 28 }}
+        className="mb-7 block h-auto w-full rounded-lg border border-[#d0d0d0]"
       />
 
-      <div style={{ display: "grid", gap: 22 }}>
-        <label style={sectionStyle}>
+      <div className="grid gap-[22px]">
+        <label className={sectionClass}>
           <strong>お名前（最大30文字）</strong>
-          <input style={fieldStyle} type="text" value={name} maxLength={30}
-            onChange={(event) => setName(event.target.value)} placeholder="お名前を入力" />
+          <input
+            className={fieldClass}
+            type="text"
+            value={name}
+            maxLength={30}
+            onChange={(event) => setName(event.target.value)}
+            placeholder="お名前を入力"
+          />
         </label>
 
-        <div style={sectionStyle}>
-          <label htmlFor="utaite-avatar"><strong>プロフィール画像</strong></label>
+        <div className={sectionClass}>
+          <label htmlFor="utaite-avatar">
+            <strong>プロフィール画像</strong>
+          </label>
           <input
             id="utaite-avatar"
             ref={fileInputRef}
@@ -511,156 +555,213 @@ export default function ParticipationCardPage() {
           />
           <small>PNG / JPG / WebP（最大5MB）</small>
           {profileImage && (
-            <button type="button" onClick={() => {
-              setProfileImage(null);
-              if (fileInputRef.current) fileInputRef.current.value = "";
-            }} style={{ ...fieldStyle, width: "fit-content", cursor: "pointer" }}>
+            <button
+              type="button"
+              onClick={() => {
+                setProfileImage(null);
+                if (fileInputRef.current) fileInputRef.current.value = "";
+              }}
+              className={smallButtonClass}
+            >
               画像を削除
             </button>
           )}
         </div>
 
-        <fieldset style={{ ...sectionStyle, border: "1px solid #d0d0d0", borderRadius: 8, padding: 14 }}>
-          <legend style={{ fontWeight: 700 }}>活動プラットフォーム（複数選択可）</legend>
-          <div style={{ display: "flex", flexWrap: "wrap", gap: "12px 22px" }}>
+        <fieldset className={fieldsetClass}>
+          <legend className="font-bold">活動プラットフォーム（複数選択可）</legend>
+          <div className="flex flex-wrap gap-x-[22px] gap-y-3">
             {PLATFORM_OPTIONS.map((option) => (
-              <label key={option.value} style={choiceStyle}>
-                <input type="checkbox" checked={platforms.includes(option.value)}
-                  onChange={() => togglePlatform(option.value)} />
+              <label key={option.value} className={choiceClass}>
+                <input
+                  type="checkbox"
+                  checked={platforms.includes(option.value)}
+                  onChange={() => togglePlatform(option.value)}
+                />
                 {option.label}
               </label>
             ))}
           </div>
           {platforms.includes("other") && (
-            <label style={sectionStyle}>
+            <label className={sectionClass}>
               <span>その他のプラットフォーム（最大25文字）</span>
-              <input style={fieldStyle} value={otherPlatform} maxLength={25}
-                onChange={(event) => setOtherPlatform(event.target.value)} placeholder="サービス名など" />
+              <input
+                className={fieldClass}
+                value={otherPlatform}
+                maxLength={25}
+                onChange={(event) => setOtherPlatform(event.target.value)}
+                placeholder="サービス名など"
+              />
             </label>
           )}
         </fieldset>
 
-        <label style={sectionStyle}>
+        <label className={sectionClass}>
           <strong>ジャンル（最大51文字）</strong>
-          <input style={fieldStyle} value={genre} maxLength={51}
-            onChange={(event) => setGenre(event.target.value)} />
+          <input
+            className={fieldClass}
+            value={genre}
+            maxLength={51}
+            onChange={(event) => setGenre(event.target.value)}
+          />
         </label>
-        <label style={sectionStyle}>
+
+        <label className={sectionClass}>
           <strong>好きな歌い手（最大51文字）</strong>
           <input
-            style={fieldStyle}
+            className={fieldClass}
             value={favoriteSinger}
             maxLength={51}
             onChange={(event) => setFavoriteSinger(event.target.value)}
           />
         </label>
-        <div style={sectionStyle}>
+
+        <div className={sectionClass}>
           <strong>好きな曲 or ボカロP（最大51文字）</strong>
-
-          
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            flexWrap: "wrap",
-            gap: "12px 20px",
-          }}
-        >
-          <label style={choiceStyle}>
-            <input
-              type="checkbox"
-              checked={favoriteTypes.includes("song")}
-              onChange={() => toggleFavoriteType("song")}
-            />
-            好きな曲
-          </label>
-
-          <label style={choiceStyle}>
-            <input
-              type="checkbox"
-              checked={favoriteTypes.includes("vocaloidP")}
-              onChange={() => toggleFavoriteType("vocaloidP")}
-            />
-            ボカロP
-          </label>
-
-          <span style={{ marginLeft: "auto", fontSize: 14 }}>
-            表示形式：
-          </span>
-
-          <label style={choiceStyle}>
-            <input
-              type="radio"
-              name="favorite-mark-style"
-              checked={favoriteMarkStyle === "underline"}
-              onChange={() => setFavoriteMarkStyle("underline")}
-            />
-            下線
-          </label>
-
-          <label style={choiceStyle}>
-            <input
-              type="radio"
-              name="favorite-mark-style"
-              checked={favoriteMarkStyle === "check"}
-              onChange={() => setFavoriteMarkStyle("check")}
-            />
-            チェック
-          </label>
-        </div>
-
+          <div className="flex flex-wrap items-center gap-x-5 gap-y-3">
+            <label className={choiceClass}>
+              <input
+                type="checkbox"
+                checked={favoriteTypes.includes("song")}
+                onChange={() => toggleFavoriteType("song")}
+              />
+              好きな曲
+            </label>
+            <label className={choiceClass}>
+              <input
+                type="checkbox"
+                checked={favoriteTypes.includes("vocaloidP")}
+                onChange={() => toggleFavoriteType("vocaloidP")}
+              />
+              ボカロP
+            </label>
+            <span className="ml-auto text-sm">表示形式：</span>
+            <label className={choiceClass}>
+              <input
+                type="radio"
+                name="favorite-mark-style"
+                checked={favoriteMarkStyle === "underline"}
+                onChange={() => setFavoriteMarkStyle("underline")}
+              />
+              下線
+            </label>
+            <label className={choiceClass}>
+              <input
+                type="radio"
+                name="favorite-mark-style"
+                checked={favoriteMarkStyle === "check"}
+                onChange={() => setFavoriteMarkStyle("check")}
+              />
+              チェック
+            </label>
+          </div>
           <input
-            style={fieldStyle}
+            className={fieldClass}
             value={favoriteSongOrVocaloidP}
             maxLength={51}
-            onChange={(event) =>
-              setFavoriteSongOrVocaloidP(event.target.value)
-            }
+            onChange={(event) => setFavoriteSongOrVocaloidP(event.target.value)}
             placeholder="好きな曲名やボカロP名を入力"
           />
-
           <small>両方選択できます。選択した表示形式でマークが付きます。</small>
         </div>
 
-        <fieldset style={{ ...sectionStyle, border: "1px solid #d0d0d0", borderRadius: 8, padding: 14 }}>
-          <legend style={{ fontWeight: 700 }}>無名歌唱ステージ参加</legend>
-          <label style={choiceStyle}><input type="radio" name="stage" checked={stageChoice === "yes"}
-            onChange={() => setStageChoice("yes")} />参加する</label>
-          <label style={choiceStyle}><input type="radio" name="stage" checked={stageChoice === "no"}
-            onChange={() => setStageChoice("no")} />参加しない</label>
-          <button type="button" onClick={() => setStageChoice("")}
-            style={{ ...fieldStyle, width: "fit-content", cursor: "pointer" }}>選択を解除</button>
+        <fieldset className={fieldsetClass}>
+          <legend className="font-bold">無名歌唱ステージ参加</legend>
+          <label className={choiceClass}>
+            <input
+              type="radio"
+              name="stage"
+              checked={stageChoice === "yes"}
+              onChange={() => setStageChoice("yes")}
+            />
+            参加する
+          </label>
+          <label className={choiceClass}>
+            <input
+              type="radio"
+              name="stage"
+              checked={stageChoice === "no"}
+              onChange={() => setStageChoice("no")}
+            />
+            参加しない
+          </label>
+          <button
+            type="button"
+            onClick={() => setStageChoice("")}
+            className={smallButtonClass}
+          >
+            選択を解除
+          </button>
         </fieldset>
 
-        <fieldset style={{ ...sectionStyle, border: "1px solid #d0d0d0", borderRadius: 8, padding: 14 }}>
-          <legend style={{ fontWeight: 700 }}>本当のルーキー打ち上げ祭りに参加したいですか？</legend>
-          <label style={choiceStyle}><input type="radio" name="afterparty" checked={afterpartyChoice === "yes"}
-            onChange={() => setAfterpartyChoice("yes")} />参加したい</label>
-          <label style={choiceStyle}><input type="radio" name="afterparty" checked={afterpartyChoice === "no"}
-            onChange={() => setAfterpartyChoice("no")} />参加できない</label>
-          <label style={choiceStyle}><input type="radio" name="afterparty" checked={afterpartyChoice === "what"}
-            onChange={() => setAfterpartyChoice("what")} />なにそれおいしいの？</label>
-          <button type="button" onClick={() => setAfterpartyChoice("")}
-            style={{ ...fieldStyle, width: "fit-content", cursor: "pointer" }}>選択を解除</button>
+        <fieldset className={fieldsetClass}>
+          <legend className="font-bold">本当のルーキー打ち上げ祭りに参加したいですか？</legend>
+          <label className={choiceClass}>
+            <input
+              type="radio"
+              name="afterparty"
+              checked={afterpartyChoice === "yes"}
+              onChange={() => setAfterpartyChoice("yes")}
+            />
+            参加したい
+          </label>
+          <label className={choiceClass}>
+            <input
+              type="radio"
+              name="afterparty"
+              checked={afterpartyChoice === "no"}
+              onChange={() => setAfterpartyChoice("no")}
+            />
+            参加できない
+          </label>
+          <label className={choiceClass}>
+            <input
+              type="radio"
+              name="afterparty"
+              checked={afterpartyChoice === "what"}
+              onChange={() => setAfterpartyChoice("what")}
+            />
+            なにそれおいしいの？
+          </label>
+          <button
+            type="button"
+            onClick={() => setAfterpartyChoice("")}
+            className={smallButtonClass}
+          >
+            選択を解除
+          </button>
         </fieldset>
 
-        <label style={sectionStyle}>
+        <label className={sectionClass}>
           <strong>最後に意気込みを聞かせてください！（最大160文字）</strong>
-          <textarea style={{ ...fieldStyle, minHeight: 110, resize: "vertical" }}
-            value={message} maxLength={160} rows={4}
+          <textarea
+            className={`${fieldClass} min-h-[110px] resize-y`}
+            value={message}
+            maxLength={160}
+            rows={4}
             onChange={(event) => setMessage(event.target.value)}
-            placeholder="自由にメッセージを入力してください" />
+            placeholder="自由にメッセージを入力してください"
+          />
           <small>{message.length}/160文字・自動改行（表示は最大4行）</small>
         </label>
 
-        <button type="button" onClick={downloadCard} disabled={exporting}
-          style={{ padding: "14px 20px", fontSize: 17, fontWeight: 700, border: 0,
-            borderRadius: 8, background: "#176f35", color: "white",
-            cursor: exporting ? "wait" : "pointer", opacity: exporting ? 0.65 : 1 }}>
+        <button
+          type="button"
+          onClick={downloadCard}
+          disabled={exporting}
+          className={`w-full rounded-lg bg-[#176f35] px-5 py-3.5 text-[17px] font-bold text-white transition-opacity hover:opacity-90 ${
+            exporting ? "cursor-wait opacity-65" : "cursor-pointer"
+          }`}
+        >
           {exporting ? "PNG画像を作成中…" : "PNG画像を保存"}
         </button>
-        {error && <p role="alert" style={{ color: "#b42318" }}>{error}</p>}
-        <p style={{ fontSize: 13, opacity: 0.75, marginTop: -12 }}>
+
+        {error && (
+          <p role="alert" className="text-[#b42318]">
+            {error}
+          </p>
+        )}
+        <p className="-mt-3 text-[13px] opacity-75">
           画像と入力内容はブラウザ内で処理され、サーバーには送信されません。
         </p>
       </div>
