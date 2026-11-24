@@ -32,4 +32,4 @@ jobs:
           incremental: 'true'
           checkpoint_range: 'true'
           effort: medium
-          max_tokens_budget: '100000'
+          max_tokens_budget: '500000'
