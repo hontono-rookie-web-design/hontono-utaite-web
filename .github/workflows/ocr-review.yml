@@ -1,0 +1,35 @@
+name: OpenCodeReview PR Review
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+
+permissions:
+  contents: read
+  pull-requests: write
+
+concurrency:
+  group: ocr-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  review:
+    # Secrets and write permissions are never exposed to fork PRs.
+    if: github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Review PR with OpenCodeReview
+        uses: alibaba/open-code-review@7e5ce06c88de5ce81df5dc4f24e2e485b517fae8 # v1.13.10
+        with:
+          llm_url: https://generativelanguage.googleapis.com/v1beta/openai/chat/completions
+          llm_auth_token: ${{ secrets.GEMINI_API_KEY }}
+          llm_model: gemini-3.6-flash
+          llm_use_anthropic: 'false'
+          llm_extra_body: '{}'
+          language: Japanese
+          sticky_summary: 'true'
+          incremental: 'true'
+          checkpoint_range: 'true'
+          effort: medium
+          max_tokens_budget: '100000'

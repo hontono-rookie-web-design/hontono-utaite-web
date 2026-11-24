@@ -1,4 +1,4 @@
-# 本当のルーキー祭り2026秋 Webサイト frontend
+# 本当のルーキー歌い手祭り2026冬 Webサイト frontend
 
 このサイトは[Next.js](https://nextjs.org)プロジェクトです。[`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app)により作成されました。
 

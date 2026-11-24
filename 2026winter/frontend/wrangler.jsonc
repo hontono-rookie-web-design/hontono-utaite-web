@@ -1,8 +1,8 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
   "main": ".open-next/worker.js",
-  "name": "2026autumn",
-  "compatibility_date": "2026-07-04",
+  "name": "2026winter-utaite",
+  "compatibility_date": "2026-11-19",
   "compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
   "keep_vars": true,
   "preview_urls": true,
@@ -17,7 +17,7 @@
       // Self-reference service binding, the service name must match the worker name
       // see https://opennext.js.org/cloudflare/caching
       "binding": "WORKER_SELF_REFERENCE",
-      "service": "2026autumn",
+      "service": "2026winter-utaite",
     },
   ],
 
@@ -25,6 +25,17 @@
     // Enable image optimization
     // see https://opennext.js.org/cloudflare/howtos/image
     "binding": "IMAGES",
+  },
+
+  // Worker Previews do not inherit top-level settings.
+  // WORKER_SELF_REFERENCE is intentionally not declared here because a
+  // Preview's service binding targets the production deployment of the
+  // bound Worker.
+  // see https://developers.cloudflare.com/workers/previews/configuration/
+  "previews": {
+    "images": {
+      "binding": "IMAGES",
+    },
   },
 
   "observability": {
