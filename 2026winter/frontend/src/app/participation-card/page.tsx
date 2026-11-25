@@ -30,17 +30,7 @@ type StageChoice = "yes" | "no" | "";
 type AfterpartyChoice = "yes" | "no" | "what" | "";
 type FavoriteType = "song" | "vocaloidP";
 type FavoriteMarkStyle = "underline" | "check";
-type TextAppearance = {
-  color: string;
-  fontFamily: string;
-  sizeScale: number;
-};
 
-const DEFAULT_TEXT_APPEARANCE: TextAppearance = {
-  color: "#222222",
-  fontFamily: "sans-serif",
-  sizeScale: 1,
-};
 type CardValues = {
   name: string;
   profileImage: string | null;
@@ -54,7 +44,6 @@ type CardValues = {
   stageChoice: StageChoice;
   afterpartyChoice: AfterpartyChoice;
   message: string;
-  textAppearance: TextAppearance;
 };
 
 function loadImage(src: string): Promise<HTMLImageElement> {
@@ -127,14 +116,9 @@ function drawProfileImage(
 }
 
 
-function drawCheck(
-  ctx: CanvasRenderingContext2D,
-  x: number,
-  y: number,
-  color: string,
-) {
+function drawCheck(ctx: CanvasRenderingContext2D, x: number, y: number) {
   ctx.save();
-  ctx.strokeStyle = color;
+  ctx.strokeStyle = "#FF0208";
   ctx.lineWidth = 6;
   ctx.lineCap = "round";
   ctx.lineJoin = "round";
@@ -151,11 +135,10 @@ function drawUnderline(
   startX: number,
   endX: number,
   y: number,
-  color: string,
 ) {
   ctx.save();
 
-  ctx.strokeStyle = color;
+  ctx.strokeStyle = "#FF0208";
   ctx.lineWidth = 5;
   ctx.lineCap = "round";
 
@@ -178,24 +161,23 @@ function drawFittedText(
   maxWidth: number,
   initialSize: number,
   minSize: number,
-  appearance: TextAppearance,
 ) {
   if (!text.trim()) return;
 
   ctx.save();
-  ctx.fillStyle = appearance.color;
+  ctx.fillStyle = "#222222";
   ctx.textAlign = "center";
   ctx.textBaseline = "middle";
 
-  let size = Math.max(minSize, Math.round(initialSize * appearance.sizeScale));
+  let size = initialSize;
 
   while (size > minSize) {
-    ctx.font = `bold ${size}px ${appearance.fontFamily}`;
+    ctx.font = `bold ${size}px sans-serif`;
     if (ctx.measureText(text).width <= maxWidth) break;
     size -= 1;
   }
 
-  ctx.font = `bold ${size}px ${appearance.fontFamily}`;
+  ctx.font = `bold ${size}px sans-serif`;
   ctx.fillText(text, centerX, centerY, maxWidth);
 
   ctx.restore();
@@ -215,33 +197,29 @@ function drawCenteredWrappedText(
   maxHeight: number,
   initialSize = 38,
   minSize = 18,
-  appearance: TextAppearance = DEFAULT_TEXT_APPEARANCE,
 ) {
   if (!text.trim()) return;
 
   ctx.save();
-  ctx.fillStyle = appearance.color;
+  ctx.fillStyle = "#222222";
   ctx.textAlign = "center";
   ctx.textBaseline = "middle";
 
-  let size = Math.max(
-    minSize,
-    Math.round(initialSize * appearance.sizeScale),
-  );
+  let size = initialSize;
   let lines: string[] = [];
   let lineHeight = 0;
 
   // Choose a font size that keeps the whole wrapped block in the box.
   // 折り返されたブロック全体がボックス内に収まるようなフォントサイズを選択してください。
   for (; size >= minSize; size--) {
-    ctx.font = `bold ${size}px ${appearance.fontFamily}`;
+    ctx.font = `bold ${size}px sans-serif`;
     lines = wrapLines(ctx, text, maxWidth);
     lineHeight = size * 1.3;
     if (lines.length * lineHeight <= maxHeight) break;
   }
 
   size = Math.max(size, minSize);
-  ctx.font = `bold ${size}px ${appearance.fontFamily}`;
+  ctx.font = `bold ${size}px sans-serif`;
   lines = wrapLines(ctx, text, maxWidth);
   lineHeight = size * 1.3;
 
@@ -293,12 +271,8 @@ function wrapLines(ctx: CanvasRenderingContext2D, text: string, maxWidth: number
 
 // Center the final message inside the large bottom white rectangle.
 // 最後のメッセージを、下部にある大きな白い長方形の中央に配置する。
-function drawMessage(
-  ctx: CanvasRenderingContext2D,
-  message: string,
-  appearance: TextAppearance,
-) {
-  drawCenteredWrappedText(ctx, message, 600, 1434, 1040, 166, 40, 22, appearance);
+function drawMessage(ctx: CanvasRenderingContext2D, message: string) {
+  drawCenteredWrappedText(ctx, message, 600, 1434, 1040, 166, 40, 22);
 }
 
 async function renderCard(
@@ -329,74 +303,58 @@ async function renderCard(
 
   if (profile) drawProfileImage(ctx, profile);
 
-  const markColor =
-    values.textAppearance.color === DEFAULT_TEXT_APPEARANCE.color
-      ? "#FF0208"
-      : values.textAppearance.color;
-
   // お名前
-  drawFittedText(ctx, values.name, 849, 340, 590, 48, 24, values.textAppearance);
+  drawFittedText(ctx, values.name, 849, 340, 590, 48, 24);
 
   // 活動プラットフォーム（multiple selections）
   PLATFORM_OPTIONS.forEach((option) => {
     if (values.platforms.includes(option.value)) {
-      drawCheck(ctx, option.x, option.y, markColor);
+      drawCheck(ctx, option.x, option.y);
     }
   });
   if (values.platforms.includes("other")) {
-    drawFittedText(ctx, values.otherPlatform, 845, 625, 450, 36, 24, values.textAppearance);
+    drawFittedText(ctx, values.otherPlatform, 845, 625, 450, 36, 24);
   }
 
   // My Favorite fields: centered in both directions, with automatic wrapping.
   // 「お気に入り」フィールド：縦横ともに中央揃えで、自動折り返しあり。
   // The white rectangles are x=38..585 / 628..1175 and y=756..894 / 960..1098.
   // 白い長方形の範囲は、x=38～585 / 628～1175、y=756～894 / 960～1098 です。
-  drawCenteredWrappedText(ctx, values.genre, 311, 826, 490, 110, 38, 18, values.textAppearance);
-  drawCenteredWrappedText(ctx, values.favoriteSinger, 902, 826, 490, 110, 38, 18, values.textAppearance);
-  drawCenteredWrappedText(ctx, values.favoriteSongOrVocaloidP, 311, 1028, 490, 110, 38, 18, values.textAppearance);
+  drawCenteredWrappedText(ctx, values.genre, 311, 826, 490, 110, 38, 18);
+  drawCenteredWrappedText(ctx, values.favoriteSinger, 902, 826, 490, 110, 38, 18);
+  drawCenteredWrappedText(ctx, values.favoriteSongOrVocaloidP, 311, 1028, 490, 110, 38, 18);
 
   // Display either underlines or checkmarks.
   // 下線またはチェックマークのいずれかを表示する。
   if (values.favoriteMarkStyle === "underline") {
     if (values.favoriteTypes.includes("song")) {
-      drawUnderline(ctx, 65, 251, 951, markColor);
+      drawUnderline(ctx, 65, 251, 951);
     }
 
     if (values.favoriteTypes.includes("vocaloidP")) {
-      drawUnderline(ctx, 350, 505, 951, markColor);
+      drawUnderline(ctx, 350, 505, 951);
     }
   } else {
     if (values.favoriteTypes.includes("song")) {
-      drawCheck(ctx, 247, 947, markColor);
+      drawCheck(ctx, 247, 947);
     }
 
     if (values.favoriteTypes.includes("vocaloidP")) {
-      drawCheck(ctx, 495, 947, markColor);
+      drawCheck(ctx, 495, 947);
     }
   }
 
+  // 無名歌唱ステージ参加（single choice）
+  if (values.stageChoice === "yes") drawCheck(ctx, 672, 1002);
+  if (values.stageChoice === "no") drawCheck(ctx, 672, 1039);
 
-  // 無名歌唱ステージ参加
-  if (values.stageChoice === "yes") {
-    drawCheck(ctx, 672, 1002, markColor);
-  }
-  if (values.stageChoice === "no") {
-    drawCheck(ctx, 672, 1039, markColor);
-  }
-
-  // 本当のルーキー打ち上げ祭り
-  if (values.afterpartyChoice === "yes") {
-    drawCheck(ctx, 179, 1187, markColor);
-  }
-  if (values.afterpartyChoice === "no") {
-    drawCheck(ctx, 179, 1223, markColor);
-  }
-  if (values.afterpartyChoice === "what") {
-    drawCheck(ctx, 590, 1187, markColor);
-  }
+  // 本当のルーキー打ち上げ祭りに参加したいですか？（single choice）
+  if (values.afterpartyChoice === "yes") drawCheck(ctx, 179, 1187);
+  if (values.afterpartyChoice === "no") drawCheck(ctx, 179, 1223);
+  if (values.afterpartyChoice === "what") drawCheck(ctx, 590, 1187);
 
   // 最後に意気込みを聞かせてください！
-  drawMessage(ctx, values.message, values.textAppearance);
+  drawMessage(ctx, values.message);
 }
 
 const fieldClass =
@@ -427,19 +385,10 @@ export default function ParticipationCardPage() {
   const [favoriteSongOrVocaloidP, setFavoriteSongOrVocaloidP] = useState("");
   const [favoriteTypes, setFavoriteTypes] = useState<FavoriteType[]>([]);
   const [favoriteMarkStyle, setFavoriteMarkStyle] =
-    useState<FavoriteMarkStyle>("underline");
+  useState<FavoriteMarkStyle>("underline");
   const [stageChoice, setStageChoice] = useState<StageChoice>("");
   const [afterpartyChoice, setAfterpartyChoice] = useState<AfterpartyChoice>("");
   const [message, setMessage] = useState("");
-  const [textColor, setTextColor] = useState(
-    DEFAULT_TEXT_APPEARANCE.color,
-  );
-
-  const [textFont, setTextFont] = useState(
-    DEFAULT_TEXT_APPEARANCE.fontFamily,
-  );
-
-  const [textSize, setTextSize] = useState(100);
   const [error, setError] = useState("");
   const [exporting, setExporting] = useState(false);
 
@@ -456,13 +405,8 @@ export default function ParticipationCardPage() {
     stageChoice,
     afterpartyChoice,
     message,
-    textAppearance: {
-      color: textColor,
-      fontFamily: textFont,
-      sizeScale: textSize / 100,
-    },
   }), [name, profileImage, platforms, otherPlatform, genre, favoriteSinger,
-      favoriteSongOrVocaloidP, favoriteTypes, favoriteMarkStyle, stageChoice, afterpartyChoice, message, textColor, textFont, textSize]);
+      favoriteSongOrVocaloidP, favoriteTypes, favoriteMarkStyle, stageChoice, afterpartyChoice, message]);
 
   useEffect(() => {
     let cancelled = false;
@@ -800,78 +744,6 @@ export default function ParticipationCardPage() {
           />
           <small>{message.length}/160文字・自動改行（表示は最大4行）</small>
         </label>
-
-        <fieldset className={fieldsetClass}>
-          <legend className="font-bold">文字のカスタマイズ</legend>
-
-          {/* Font family */}
-          <label className={sectionClass}>
-            <span>フォント</span>
-            <select
-              className={fieldClass}
-              value={textFont}
-              onChange={(event) => setTextFont(event.target.value)}
-            >
-              <option value="sans-serif">ゴシック体</option>
-              <option value="serif">明朝体</option>
-              <option value="monospace">等幅フォント</option>
-            </select>
-          </label>
-
-          {/* Text color */}
-          <div className={sectionClass}>
-            <label htmlFor="card-text-color">文字・マークの色</label>
-            <div className="flex flex-wrap items-center gap-3">
-              <input
-                id="card-text-color"
-                type="color"
-                value={textColor}
-                onChange={(event) => setTextColor(event.target.value)}
-                className="h-10 w-16 cursor-pointer rounded-lg border border-[#b8bec7] bg-white p-1"
-              />
-              <span className="font-mono text-sm">{textColor.toUpperCase()}</span>
-            </div>
-          </div>
-
-          {/* Font size */}
-          <div className={sectionClass}>
-            <label htmlFor="card-text-size">
-              文字サイズ：{textSize}%
-            </label>
-            <input
-              id="card-text-size"
-              type="range"
-              min={70}
-              max={130}
-              step={5}
-              value={textSize}
-              onChange={(event) => setTextSize(Number(event.target.value))}
-              className="w-full cursor-pointer accent-primary"
-            />
-            <div className="flex justify-between text-xs opacity-70">
-              <span>70%</span>
-              <span>100%</span>
-              <span>130%</span>
-            </div>
-          </div>
-
-          {/* Reset */}
-          <button
-            type="button"
-            onClick={() => {
-              setTextColor(DEFAULT_TEXT_APPEARANCE.color);
-              setTextFont(DEFAULT_TEXT_APPEARANCE.fontFamily);
-              setTextSize(100);
-            }}
-            className={smallButtonClass}
-          >
-            文字設定をリセット
-          </button>
-
-          <small className="opacity-70">
-            文字サイズは元のサイズを基準とし、長い文章は枠内に収まるよう自動調整されます。
-          </small>
-        </fieldset>
 
         <button
           type="button"
