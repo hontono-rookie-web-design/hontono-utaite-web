@@ -29,7 +29,6 @@ type Platform = (typeof PLATFORM_OPTIONS)[number]["value"];
 type StageChoice = "yes" | "no" | "";
 type AfterpartyChoice = "yes" | "no" | "what" | "";
 type FavoriteType = "song" | "vocaloidP";
-type FavoriteMarkStyle = "underline" | "check";
 
 type CardValues = {
   name: string;
@@ -40,7 +39,6 @@ type CardValues = {
   favoriteSinger: string;
   favoriteSongOrVocaloidP: string;
   favoriteTypes: FavoriteType[];
-  favoriteMarkStyle: FavoriteMarkStyle;
   stageChoice: StageChoice;
   afterpartyChoice: AfterpartyChoice;
   message: string;
@@ -127,26 +125,6 @@ function drawCheck(ctx: CanvasRenderingContext2D, x: number, y: number) {
   ctx.lineTo(x - 3, y + 9);
   ctx.lineTo(x + 14, y - 13);
   ctx.stroke();
-  ctx.restore();
-}
-
-function drawUnderline(
-  ctx: CanvasRenderingContext2D,
-  startX: number,
-  endX: number,
-  y: number,
-) {
-  ctx.save();
-
-  ctx.strokeStyle = "#FF0208";
-  ctx.lineWidth = 5;
-  ctx.lineCap = "round";
-
-  ctx.beginPath();
-  ctx.moveTo(startX, y);
-  ctx.lineTo(endX, y);
-  ctx.stroke();
-
   ctx.restore();
 }
 
@@ -324,24 +302,13 @@ async function renderCard(
   drawCenteredWrappedText(ctx, values.favoriteSinger, 902, 826, 490, 110, 38, 18);
   drawCenteredWrappedText(ctx, values.favoriteSongOrVocaloidP, 311, 1028, 490, 110, 38, 18);
 
-  // Display either underlines or checkmarks.
-  // 下線またはチェックマークのいずれかを表示する。
-  if (values.favoriteMarkStyle === "underline") {
-    if (values.favoriteTypes.includes("song")) {
-      drawUnderline(ctx, 65, 251, 951);
-    }
+  // 好きな曲・ボカロPの選択をチェックマークで表示
+  if (values.favoriteTypes.includes("song")) {
+    drawCheck(ctx, 247, 947);
+  }
 
-    if (values.favoriteTypes.includes("vocaloidP")) {
-      drawUnderline(ctx, 350, 505, 951);
-    }
-  } else {
-    if (values.favoriteTypes.includes("song")) {
-      drawCheck(ctx, 247, 947);
-    }
-
-    if (values.favoriteTypes.includes("vocaloidP")) {
-      drawCheck(ctx, 495, 947);
-    }
+  if (values.favoriteTypes.includes("vocaloidP")) {
+    drawCheck(ctx, 495, 947);
   }
 
   // 無名歌唱ステージ参加（single choice）
@@ -384,8 +351,6 @@ export default function ParticipationCardPage() {
   const [favoriteSinger, setFavoriteSinger] = useState("");
   const [favoriteSongOrVocaloidP, setFavoriteSongOrVocaloidP] = useState("");
   const [favoriteTypes, setFavoriteTypes] = useState<FavoriteType[]>([]);
-  const [favoriteMarkStyle, setFavoriteMarkStyle] =
-  useState<FavoriteMarkStyle>("underline");
   const [stageChoice, setStageChoice] = useState<StageChoice>("");
   const [afterpartyChoice, setAfterpartyChoice] = useState<AfterpartyChoice>("");
   const [message, setMessage] = useState("");
@@ -401,12 +366,11 @@ export default function ParticipationCardPage() {
     favoriteSinger,
     favoriteSongOrVocaloidP,
     favoriteTypes,
-    favoriteMarkStyle,
     stageChoice,
     afterpartyChoice,
     message,
   }), [name, profileImage, platforms, otherPlatform, genre, favoriteSinger,
-      favoriteSongOrVocaloidP, favoriteTypes, favoriteMarkStyle, stageChoice, afterpartyChoice, message]);
+      favoriteSongOrVocaloidP, favoriteTypes, stageChoice, afterpartyChoice, message]);
 
   useEffect(() => {
     let cancelled = false;
@@ -635,25 +599,6 @@ export default function ParticipationCardPage() {
               />
               ボカロP
             </label>
-            <span className="ml-auto text-sm">表示形式：</span>
-            <label className={choiceClass}>
-              <input
-                type="radio"
-                name="favorite-mark-style"
-                checked={favoriteMarkStyle === "underline"}
-                onChange={() => setFavoriteMarkStyle("underline")}
-              />
-              下線
-            </label>
-            <label className={choiceClass}>
-              <input
-                type="radio"
-                name="favorite-mark-style"
-                checked={favoriteMarkStyle === "check"}
-                onChange={() => setFavoriteMarkStyle("check")}
-              />
-              チェック
-            </label>
           </div>
           <input
             className={fieldClass}
@@ -662,7 +607,7 @@ export default function ParticipationCardPage() {
             onChange={(event) => setFavoriteSongOrVocaloidP(event.target.value)}
             placeholder="好きな曲名やボカロP名を入力"
           />
-          <small>両方選択できます。選択した表示形式でマークが付きます。</small>
+          <small>両方選択できます。選択した項目にチェックマークが付きます。</small>
         </div>
 
         <fieldset className={fieldsetClass}>
