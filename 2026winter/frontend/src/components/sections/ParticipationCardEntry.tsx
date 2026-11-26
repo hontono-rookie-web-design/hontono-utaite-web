@@ -15,22 +15,22 @@ export default function ParticipationCardEntry() {
           参加表明カードを簡単に作成できます！
         </p>
 
-        <div className="mb-6 flex justify-center">
+        <div className="flex flex-col items-center justify-center gap-8 md:flex-row md:gap-12">
           <Image
             src="/participation-card/template-utaite.png"
             alt="参加表明カードのサンプル"
             width={1200}
             height={1600}
-            className="h-auto w-32 rounded-lg border border-gray-200 shadow-sm sm:w-40"
+            className="h-auto w-32 shrink-0 rounded-lg border border-gray-200 shadow-sm sm:w-40"
           />
-        </div>
 
-        <Link
-          href="/participation-card"
-          className="inline-block rounded-lg bg-orange-500 px-6 py-3 font-bold text-white transition-colors hover:bg-orange-600"
-        >
-          参加表明カードを作成する
-        </Link>
+          <Link
+            href="/participation-card"
+            className="inline-block rounded-lg bg-orange-500 px-6 py-3 font-bold text-white transition-colors hover:bg-orange-600"
+          >
+            参加表明カードを作成する
+          </Link>
+        </div>
       </div>
     </section>
   );
