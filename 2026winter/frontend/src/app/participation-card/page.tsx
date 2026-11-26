@@ -34,12 +34,14 @@ type TextAppearance = {
   color: string;
   fontFamily: string;
   sizeScale: number;
+  colorCustomized: boolean;
 };
 
 const DEFAULT_TEXT_APPEARANCE: TextAppearance = {
   color: "#222222",
   fontFamily: "sans-serif",
   sizeScale: 1,
+  colorCustomized: false,
 };
 type CardValues = {
   name: string;
@@ -329,11 +331,10 @@ async function renderCard(
 
   if (profile) drawProfileImage(ctx, profile);
 
-  const markColor =
-    values.textAppearance.color === DEFAULT_TEXT_APPEARANCE.color
-      ? "#FF0208"
-      : values.textAppearance.color;
-
+  const markColor = values.textAppearance.colorCustomized
+    ? values.textAppearance.color
+    : "#FF0208";
+      
   // お名前
   drawFittedText(ctx, values.name, 849, 340, 590, 48, 24, values.textAppearance);
 
@@ -434,6 +435,10 @@ export default function ParticipationCardPage() {
   const [textColor, setTextColor] = useState(
     DEFAULT_TEXT_APPEARANCE.color,
   );
+  const [hexInput, setHexInput] = useState(
+    DEFAULT_TEXT_APPEARANCE.color,
+  );
+  const [colorCustomized, setColorCustomized] = useState(false);
 
   const [textFont, setTextFont] = useState(
     DEFAULT_TEXT_APPEARANCE.fontFamily,
@@ -460,9 +465,10 @@ export default function ParticipationCardPage() {
       color: textColor,
       fontFamily: textFont,
       sizeScale: textSize / 100,
+      colorCustomized,
     },
   }), [name, profileImage, platforms, otherPlatform, genre, favoriteSinger,
-      favoriteSongOrVocaloidP, favoriteTypes, favoriteMarkStyle, stageChoice, afterpartyChoice, message, textColor, textFont, textSize]);
+      favoriteSongOrVocaloidP, favoriteTypes, favoriteMarkStyle, stageChoice, afterpartyChoice, message, textColor, textFont, textSize, colorCustomized]);
 
   useEffect(() => {
     let cancelled = false;
@@ -821,16 +827,42 @@ export default function ParticipationCardPage() {
           {/* Text color */}
           <div className={sectionClass}>
             <label htmlFor="card-text-color">文字・マークの色</label>
+
             <div className="flex flex-wrap items-center gap-3">
               <input
                 id="card-text-color"
                 type="color"
                 value={textColor}
-                onChange={(event) => setTextColor(event.target.value)}
+                onChange={(event) => {
+                  const color = event.target.value;
+                  setTextColor(color);
+                  setHexInput(color.toUpperCase());
+                  setColorCustomized(true);
+                }}
                 className="h-10 w-16 cursor-pointer rounded-lg border border-[#b8bec7] bg-white p-1"
               />
-              <span className="font-mono text-sm">{textColor.toUpperCase()}</span>
+
+              <input
+                type="text"
+                aria-label="HEXカラーコード"
+                value={hexInput}
+                maxLength={7}
+                placeholder="#FF69B4"
+                onChange={(event) => {
+                  const value = event.target.value;
+                  setHexInput(value);
+
+                  if (/^#[0-9a-fA-F]{6}$/.test(value)) {
+                    setTextColor(value);
+                  }
+                }}
+                className={`${fieldClass} w-40 font-mono`}
+              />
             </div>
+
+            <small className="opacity-70">
+              HEXカラーコード（例：#FF69B4）を直接入力できます。
+            </small>
           </div>
 
           {/* Font size */}
@@ -860,6 +892,8 @@ export default function ParticipationCardPage() {
             type="button"
             onClick={() => {
               setTextColor(DEFAULT_TEXT_APPEARANCE.color);
+              setHexInput(DEFAULT_TEXT_APPEARANCE.color);
+              setColorCustomized(false);
               setTextFont(DEFAULT_TEXT_APPEARANCE.fontFamily);
               setTextSize(100);
             }}
