@@ -269,7 +269,7 @@ async function renderCard(
     values.profileImage
       ? loadCachedImage(values.profileImage, imageCache)
       : Promise.resolve(null),
-    document.fonts.ready,
+    document.fonts?.ready ?? Promise.resolve(),
   ]);
 
   if (isCancelled()) return;
@@ -606,6 +606,7 @@ export default function ParticipationCardPage() {
             maxLength={51}
             onChange={(event) => setFavoriteSongOrVocaloidP(event.target.value)}
             placeholder="好きな曲名やボカロP名を入力"
+            aria-label="好きな曲 or ボカロP"
           />
           <small>両方選択できます。選択した項目にチェックマークが付きます。</small>
         </div>
