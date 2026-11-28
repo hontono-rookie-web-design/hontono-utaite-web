@@ -854,6 +854,7 @@ export default function ParticipationCardPage() {
 
                   if (/^#[0-9a-fA-F]{6}$/.test(value)) {
                     setTextColor(value);
+                    setColorCustomized(true);
                   }
                 }}
                 className={`${fieldClass} w-40 font-mono`}
