@@ -1,6 +1,6 @@
 "use client";
 
-import { Home, Menu, Music, Vote } from "lucide-react";
+import { Home, ImagePlus, Menu, Music, Vote } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 
@@ -94,6 +94,23 @@ export default function Navigation({ children }: { children: React.ReactNode }) 
               人気投票 決勝
             </Link>
           </li>
+            
+          <li className="menu-title mt-4 text-secondary font-bold tracking-widest text-xs uppercase">
+            参加表明カード
+          </li>
+
+          <li>
+            <Link
+              href="/participation-card"
+              prefetch={false}
+              onClick={closeDrawer}
+            >
+              <ImagePlus className="w-4 h-4 mr-3 text-slate-400" />
+              参加表明カードメーカー
+            </Link>
+          </li>
+
+
         </ul>
       </div>
     </div>
